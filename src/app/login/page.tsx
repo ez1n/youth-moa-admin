@@ -3,6 +3,8 @@
 import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { useAuth } from "@/_hooks/useAuth";
+
 import { Button } from "@/_components/common/Button";
 import { Input } from "@/_components/common/Input";
 import { Title } from "@/_components/common/Title";
@@ -10,6 +12,7 @@ import { Alert } from "@/_components/common/Alert";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
 
   const [isShowAlert, setIsShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,18 +26,28 @@ export default function LoginPage() {
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!user.email || !user.password) {
       setErrorMessage(
         !user.email ? "아이디를 입력해주세요." : "비밀번호를 입력해주세요."
       );
       setIsShowAlert(true);
+
       return;
     }
 
     setErrorMessage("");
-    // TODO: 로그인 api 연동
-    console.log("login");
+
+    const response = await login(user);
+
+    if (response) {
+      setErrorMessage(response.errorMessage);
+      setIsShowAlert(true);
+
+      return;
+    }
+
+    router.replace("/");
   };
 
   return (
