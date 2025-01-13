@@ -3,10 +3,10 @@ import { tw } from "../../../tailwindmerge.config";
 import type { IconProps } from "./type";
 
 export const IcoEye = (props: IconProps) => {
-  const { color = "#909092", size = 20, className } = props;
+  const { color = "#909092", size = 20, className, onClick } = props;
 
   return (
-    <span className={tw("inline-block", className)}>
+    <span className={tw("inline-block", className)} onClick={onClick}>
       <svg
         width={size}
         height={size}
