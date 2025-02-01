@@ -65,7 +65,7 @@ export default function UsersPage() {
       <div className="flex justify-between">
         {/* 필터 섹션 */}
         <div className="flex justify-start flex-col">
-          <Input placeholder="검색어를 입력해주세요" />
+          <Input type="search" placeholder="검색어를 입력해주세요" />
           <div className="flex justify-between">
             <div>필터</div>
             <div>초기화</div>

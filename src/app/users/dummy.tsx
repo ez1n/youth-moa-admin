@@ -111,4 +111,15 @@ export const userDummyList: User[] = [
     lastLoginDate: new Date('2024-01-05'),
     status: UserStatus.비활성화,
   },
+  {
+    id: 11,
+    name: '배성흥',
+    email: 'iu@example.com',
+    authority: 'USER',
+    gender: Gender.여,
+    phone: '010-1122-3344',
+    joinDate: new Date('2022-10-05'),
+    lastLoginDate: new Date('2024-01-05'),
+    status: UserStatus.비활성화,
+  },
 ]
