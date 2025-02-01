@@ -3,19 +3,24 @@ export enum Gender {
   여 = '여',
 }
 
-export enum UserStatus {
-  활성화 = '활성화',
-  비활성화 = '비활성화',
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }
 
-export interface User {
+export interface UserResponse {
   id: number
-  name: string
   email: string
-  authority: string
+  role: UserRole
+  name: string
+  phone: string // 9자리 숫자 포맷. 하이픈 가공 필요
   gender: Gender
-  phone: string
-  joinDate: Date
-  lastLoginDate: Date
-  status: UserStatus
+  createdAt: string
+  lastLoginedAt: string
+}
+
+export interface GetAllUsersRequest {
+  searchKeyword?: string
+  page: number
+  size: number
 }
