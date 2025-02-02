@@ -3,10 +3,10 @@ import { tw } from '../../../tailwindmerge.config'
 import type { IconProps } from './type'
 
 export const IcoDownload = (props: IconProps) => {
-  const { color = '#909092', size = 20, className, onClick } = props
+  const { className } = props
 
   return (
-    <span className={tw('inline-block', className)} onClick={onClick}>
+    <span className={tw('inline-block', className)}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

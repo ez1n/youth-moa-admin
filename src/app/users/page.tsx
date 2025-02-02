@@ -1,57 +1,16 @@
 'use client'
 
-import { ChangeEvent, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 import { Button } from '@/_components/common/Button'
 import { Input } from '@/_components/common/Input'
 import { Title } from '@/_components/common/Title'
 import { Pagination } from '@/_components/common/Pagination'
-import { GetAllUsersRequest, UserResponse } from '@/_types/user.type'
+import { UserResponse } from '@/_types'
 import { BUTTON_TYPE } from '@/_constants'
-import { IcoEye, IcoDownload } from '@/_components/icons'
-import { getAllUsers } from '@/_networks/api/user'
-
-const UserList = ({ users }: { users: UserResponse[] }) => {
-  return (
-    <div className="p-4">
-      <table className="w-full border-gray-300 text-center">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-3">이름</th>
-            <th className="border p-3">이메일</th>
-            <th className="border p-3">권한</th>
-            <th className="border p-3">성별</th>
-            <th className="border p-3">핸드폰 번호</th>
-            <th className="border p-3">가입일</th>
-            <th className="border p-3">최근 접속일</th>
-            <th className="border p-3">상태</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user, index) => (
-            <tr key={index} className="border-b">
-              <td className="p-2">{user.name}</td>
-              <td className="p-2">{user.email}</td>
-              <td className="p-2">{user.role}</td>
-              <td className="p-2">{user.gender}</td>
-              <td className="p-2">{user.phone}</td>
-              <td className="p-2">{user.createdAt}</td>
-              <td className="p-2">{user.lastLoginedAt}</td>
-              {/* <td className="p-3">
-                <span className="px-2 py-1 bg-black text-white rounded">
-                  {user.status}
-                </span>
-              </td> */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
-const downloadExcel = () => {}
+import { IcoDownload } from '@/_components/icons'
+import { callGetAllUsers } from '@/_networks/api/user'
+import { UserList } from './components/UserList'
 
 export default function UsersPage() {
   const [currentPage, setCurrentPage] = useState(0)
@@ -59,11 +18,13 @@ export default function UsersPage() {
   const [totalUserCount, setTotalUserCount] = useState(0)
   const [userList, setUserList] = useState<UserResponse[]>([])
 
+  const downloadExcel = () => {}
+
   const fetchUsers = async () => {
     try {
-      const response = await getAllUsers({ page: currentPage, size: 10 })
+      const response = await callGetAllUsers({ page: currentPage, size: 10 })
       setUserList(response.content)
-      setTotalPages(response.totalPageCount)
+      setTotalPages(response.totalPageCount - 1) // 마지막 페이지는 데이터가 0개이므로 전체페이지 -1해준다.
       setTotalUserCount(response.totalCount)
     } catch (error) {
       console.error('사용자 목록을 불러오는 중 오류 발생:', error)
@@ -109,8 +70,7 @@ export default function UsersPage() {
           <Pagination
             totalPages={totalPages}
             currentPage={currentPage}
-            onPageChange={setCurrentPage}
-          />
+            onPageChange={setCurrentPage} />
         </div>
       </div>
     </section>
