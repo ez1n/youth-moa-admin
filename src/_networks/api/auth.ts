@@ -1,8 +1,8 @@
 import { api } from "../axios.config";
 import { USERS_PREFIX } from "../const";
-import { LoginFormType, LoginResponse } from "@/_types";
+import { LoginFormType as CallPostLoginRequestBody, LoginResponse } from "@/_types";
 
-export const requestLogin = async (user: LoginFormType) => {
+export const callPostLogin = async (user: CallPostLoginRequestBody) => {
   const response = await api.post<LoginResponse>(`${USERS_PREFIX}/login`, user);
   return response.data;
 };

@@ -1,14 +1,14 @@
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
-import { requestLogin } from "@/_networks/api/auth";
+import { callPostLogin } from "@/_networks/api/auth";
 import { LoginFormType } from "@/_types";
 
 export const useAuth = () => {
   const router = useRouter();
 
   const loginMutation = useMutation({
-    mutationFn: requestLogin,
+    mutationFn: callPostLogin,
   });
 
   const login = async ({
