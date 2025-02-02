@@ -29,7 +29,7 @@ export default function UsersPage() {
   const resetFilters = () => {
     setFilterGender(undefined)
     setFilterRole(undefined)
-    setSearchKeyword('')
+    setSearchKeyword(undefined)
   }
 
   return (
