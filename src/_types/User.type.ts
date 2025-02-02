@@ -21,6 +21,8 @@ export interface UserResponse {
 
 export interface GetAllUsersRequest {
   searchKeyword?: string
+  roles?: UserRole
+  gender?: Gender
   page: number
   size: number
 }
