@@ -64,13 +64,13 @@ export default function UsersPage() {
               name="role"
               label="사용자"
               checked={filterRole === UserRole.USER}
-              onChange={() => setFilterRole(UserRole.ADMIN)}
+              onChange={() => setFilterRole(UserRole.USER)}
             />
             <Radio
               name="role"
               label="관리자"
               checked={filterRole === UserRole.ADMIN}
-              onChange={() => setFilterRole(UserRole.USER)}
+              onChange={() => setFilterRole(UserRole.ADMIN)}
             />
           </SeperateOpenableAccordion>
           <SeperateOpenableAccordion title="성별" defaultOpen={true}>
