@@ -27,7 +27,6 @@ export function Button(props: PropsType) {
     ...rest
   } = props
 
-  // const bgColorName = type === BUTTON_TYPE.outlined ? '' : 'bg-blue'
   const bgColorName = (() => {
     switch (type) {
       case (BUTTON_TYPE.outlined, BUTTON_TYPE.none):
