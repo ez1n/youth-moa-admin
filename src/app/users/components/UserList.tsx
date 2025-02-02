@@ -1,9 +1,35 @@
-import { UserResponse } from '@/_types'
-import { formatHyphenPhone, formatDate } from '@/_utils/format.util'
+import { Pagination } from "@/_components/common/Pagination";
+import { formatHyphenPhone, formatDate } from "@/_utils/format.util";
 
-export const UserList = ({ users } : { users: UserResponse[]}) => {
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { callGetAllUsers } from "@/_networks/api/user";
+
+type UserListProps = {
+  onTotalCountChange: (count: number) => void;
+};
+
+export const UserList = (props: UserListProps) => {
+  const { onTotalCountChange } = props;
+  const [currentPage, setCurrentPage] = useState(0);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["users", currentPage],
+    queryFn: () => callGetAllUsers({ page: currentPage, size: 10 }),
+  });
+
+  useEffect(() => {
+    if (data) {
+      onTotalCountChange(data?.totalCount ?? 0);
+    }
+  }, [data, onTotalCountChange]);
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>데이터를 불러오는 중 오류 발생</div>;
+
+  const totalPages = (data?.totalPageCount ?? 1) - 1; // 전체 페이지 수
+
   return (
-    <div className="p-4">
+    <div className="flex flex-col justify-center item-centers p-4">
       <table className="w-full border-gray-300 text-center">
         <thead>
           <tr className="bg-gray-100">
@@ -17,7 +43,7 @@ export const UserList = ({ users } : { users: UserResponse[]}) => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
+          {data?.content.map((user, index) => (
             <tr key={index} className="border-b">
               <td className="p-2">{user.name}</td>
               <td className="p-2">{user.email}</td>
@@ -30,6 +56,13 @@ export const UserList = ({ users } : { users: UserResponse[]}) => {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-4 w-full">
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
     </div>
-  )
-}
+  );
+};
