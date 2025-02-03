@@ -1,9 +1,6 @@
 import { api } from '../axios.config'
 import { USERS_PREFIX } from '../const'
-import {
-  GetAllUsersRequest as CallGetAllUsersParams,
-  UserResponse,
-} from '@/_types/user.type'
+import { CallGetAllUsersParams, UserResponse } from '@/_types/user.type'
 import { PageResponse } from '@/_types/pagination.type'
 
 export const callGetAllUsers = async (params: CallGetAllUsersParams) => {

@@ -7,25 +7,30 @@ import { callGetAllUsers } from '@/_networks/api/user'
 
 import { UserRole, Gender } from '@/_types'
 
+type UserListFilter = {
+  gender?: Gender
+  role?: UserRole
+}
+
 type UserListProps = {
   onTotalCountChange: (count: number) => void
   searchKeyword?: string
-  filterGender?: Gender
-  filterRole?: UserRole
+  filter: UserListFilter
 }
 
 export const UserList = (props: UserListProps) => {
-  const { onTotalCountChange, searchKeyword, filterGender, filterRole } = props
+  const { onTotalCountChange, searchKeyword, filter } = props
+  const { gender, role } = filter
   const [currentPage, setCurrentPage] = useState(0)
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['users', currentPage, searchKeyword, filterGender, filterRole],
+    queryKey: ['users', currentPage, searchKeyword, gender, role],
     queryFn: () =>
       callGetAllUsers({
         page: currentPage,
         size: 10,
         searchKeyword: searchKeyword,
-        roles: filterRole,
-        gender: filterGender,
+        roles: role,
+        gender: gender,
       }),
   })
 

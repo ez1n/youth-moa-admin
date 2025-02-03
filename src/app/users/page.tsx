@@ -49,7 +49,7 @@ export default function UsersPage() {
             }}
           />
           <div className="flex justify-between p-2">
-            <div className="">필터</div>
+            <div>필터</div>
             <Button
               className="p-2 w-100"
               onClick={resetFilters}
@@ -107,8 +107,7 @@ export default function UsersPage() {
           <UserList
             onTotalCountChange={setTotalUserCount}
             searchKeyword={searchKeyword}
-            filterGender={filterGender}
-            filterRole={filterRole}
+            filter={{ gender: filterGender, role: filterRole }}
           />
         </div>
       </div>

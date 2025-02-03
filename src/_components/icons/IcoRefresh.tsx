@@ -22,7 +22,7 @@ export const IcoRefresh = (props: IconProps) => {
       className={tw(
         'inline-block size-6',
         className,
-        isRotated ? 'rotate-180 animate-spin-fast' : ''
+        isRotated ? 'rotate-180 animate-spin' : ''
       )}
       onClick={handleClick}
       xmlns="http://www.w3.org/2000/svg"

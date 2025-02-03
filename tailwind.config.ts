@@ -37,10 +37,6 @@ export default {
       rotate: {
         '180': '180deg',
       },
-      animation: {
-        'spin-slow': 'spin 3s linear infinite',
-        'spin-fast': 'spin 1s linear infinite',
-      },
     },
   },
   plugins: [],
