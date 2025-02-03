@@ -5,15 +5,31 @@ import { useState } from 'react'
 import { Button } from '@/_components/common/Button'
 import { Input } from '@/_components/common/Input'
 import { Title } from '@/_components/common/Title'
+import { SeperateOpenableAccordion } from '@/_components/common/SeperateOpenableAccordion'
 import { BUTTON_TYPE } from '@/_constants'
-import { IcoDownload } from '@/_components/icons'
+import { IcoDownload, IcoRefresh } from '@/_components/icons'
 import { UserList } from './components/UserList'
+import { Radio } from '@/_components/common/Radio'
+import { Gender, UserRole } from '@/_types'
 
 export default function UsersPage() {
-  const [totalUserCount, setTotalUserCount] = useState(0);
+  const [totalUserCount, setTotalUserCount] = useState(0)
+  const [searchKeyword, setSearchKeyword] = useState<string | undefined>(
+    undefined
+  )
+  const [filterGender, setFilterGender] = useState<Gender | undefined>(
+    undefined
+  )
+  const [filterRole, setFilterRole] = useState<UserRole | undefined>(undefined)
 
   const downloadExcel = () => {
     // TODO: 엑셀 다운로드 API 연동
+  }
+
+  const resetFilters = () => {
+    setFilterGender(undefined)
+    setFilterRole(undefined)
+    setSearchKeyword(undefined)
   }
 
   return (
@@ -23,19 +39,60 @@ export default function UsersPage() {
       <div className="flex justify-between">
         {/* 필터 섹션 */}
         <div className="flex justify-start flex-col">
-          <Input type="search" placeholder="검색어를 입력해주세요" />
-          <div className="flex justify-between">
+          <Input
+            type="search"
+            placeholder="검색어를 입력해주세요"
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') {
+                setSearchKeyword(e.currentTarget.value)
+              }
+            }}
+          />
+          <div className="flex justify-between p-2">
             <div>필터</div>
-            <div>초기화</div>
+            <Button
+              className="p-2 w-100"
+              onClick={resetFilters}
+              icon={<IcoRefresh />}
+              type={BUTTON_TYPE.none}
+            >
+              초기화
+            </Button>
           </div>
-          <div>권한</div>
-          <div>상태</div>
+          <SeperateOpenableAccordion title="권한" defaultOpen={true}>
+            <Radio
+              name="role"
+              label="사용자"
+              checked={filterRole === UserRole.USER}
+              onChange={() => setFilterRole(UserRole.USER)}
+            />
+            <Radio
+              name="role"
+              label="관리자"
+              checked={filterRole === UserRole.ADMIN}
+              onChange={() => setFilterRole(UserRole.ADMIN)}
+            />
+          </SeperateOpenableAccordion>
+          <SeperateOpenableAccordion title="성별" defaultOpen={true}>
+            <Radio
+              name="gender"
+              label="남"
+              checked={filterGender === Gender.남}
+              onChange={() => setFilterGender(Gender.남)}
+            />
+            <Radio
+              name="gender"
+              label="여"
+              checked={filterGender === Gender.여}
+              onChange={() => setFilterGender(Gender.여)}
+            />
+          </SeperateOpenableAccordion>
         </div>
 
         {/* 목록 섹션 */}
         <div className="flex justify-center flex-col items-center">
           <div className="flex justify-between w-full pl-4 pr-4">
-            <div>전체 { totalUserCount}명</div>
+            <div>전체 {totalUserCount}명</div>
             <div>
               <Button
                 className="p-2"
@@ -47,7 +104,11 @@ export default function UsersPage() {
               </Button>
             </div>
           </div>
-          <UserList onTotalCountChange={setTotalUserCount}/>
+          <UserList
+            onTotalCountChange={setTotalUserCount}
+            searchKeyword={searchKeyword}
+            filter={{ gender: filterGender, role: filterRole }}
+          />
         </div>
       </div>
     </section>
