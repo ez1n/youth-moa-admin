@@ -45,13 +45,5 @@ export const useAuth = () => {
     router.push("/login");
   };
 
-  const getAccessToken = async () => {
-    const accessToken = localStorage.getItem("accessToken") ?? null;
-
-    return accessToken;
-  };
-
-  const accessToken = getAccessToken();
-
-  return { login, logout, isLogin: !!accessToken };
+  return { login, logout };
 };
