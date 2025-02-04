@@ -1,8 +1,8 @@
-import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 
 import { callPostLogin } from "@/_networks/api/auth";
 import { LoginFormType } from "@/_types";
+import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
   const router = useRouter();
@@ -27,11 +27,9 @@ export const useAuth = () => {
         password,
       });
 
-      /**
-       * TODO: accessToken & 유저 정보 저장
-       */
+      localStorage.setItem("accessToken", response.tokenInfo.accessToken);
 
-      router.push("/");
+      router.replace("/");
     } catch (error: any) {
       //  TODO: 에러 핸들링
       console.error(error);
@@ -42,7 +40,18 @@ export const useAuth = () => {
     }
   };
 
-  const logout = async () => {};
+  const logout = async () => {
+    localStorage.removeItem("accessToken");
+    router.push("/login");
+  };
 
-  return { login, logout };
+  const getAccessToken = async () => {
+    const accessToken = localStorage.getItem("accessToken") ?? null;
+
+    return accessToken;
+  };
+
+  const accessToken = getAccessToken();
+
+  return { login, logout, isLogin: !!accessToken };
 };

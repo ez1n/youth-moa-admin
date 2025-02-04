@@ -51,7 +51,7 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="flex-1 flex flex-col items-center justify-center w-full px-5 py-12">
+    <section className="flex flex-col items-center justify-center w-full px-5 py-12">
       <Title title="관리자 로그인" />
 
       <div className="my-9" />
