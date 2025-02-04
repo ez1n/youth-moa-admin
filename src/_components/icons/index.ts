@@ -1,6 +1,9 @@
-export { IcoErrorCircle } from './IcoErrorCircle'
-export { IcoEye } from './IcoEye'
-export { IcoEyeSlash } from './IcoEyeSlash'
-export { Logo } from './Logo'
-export { IcoDownload } from './IcoDownload'
-export { IcoSearch } from './IcoSearch'
+export { IcoErrorCircle } from "./IcoErrorCircle";
+export { IcoEye } from "./IcoEye";
+export { IcoEyeSlash } from "./IcoEyeSlash";
+export { Logo } from "./Logo";
+export { IcoDownload } from "./IcoDownload";
+export { IcoSearch } from "./IcoSearch";
+export { IcoAccount } from "./IcoAccount";
+export { IcoLogout } from "./IcoLogout";
+export { IcoAlarm } from "./IcoAlarm";
