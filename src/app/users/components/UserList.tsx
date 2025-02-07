@@ -8,13 +8,13 @@ import { callGetAllUsers } from '@/_networks/api/user'
 import { UserRole, Gender } from '@/_types'
 
 type UserListFilter = {
-  gender?: Gender
-  role?: UserRole
+  gender?: Gender | null
+  role?: UserRole | null
 }
 
 type UserListProps = {
   onTotalCountChange: (count: number) => void
-  searchKeyword?: string
+  searchKeyword?: string | null
   filter: UserListFilter
 }
 

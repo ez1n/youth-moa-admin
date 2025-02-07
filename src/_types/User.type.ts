@@ -20,9 +20,9 @@ export interface UserResponse {
 }
 
 export interface CallGetAllUsersParams {
-  searchKeyword?: string
-  roles?: UserRole
-  gender?: Gender
+  searchKeyword?: string | null
+  roles?: UserRole | null
+  gender?: Gender | null
   page: number
   size: number
 }

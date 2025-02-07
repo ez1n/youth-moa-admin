@@ -14,22 +14,18 @@ import { Gender, UserRole } from '@/_types'
 
 export default function UsersPage() {
   const [totalUserCount, setTotalUserCount] = useState(0)
-  const [searchKeyword, setSearchKeyword] = useState<string | undefined>(
-    undefined
-  )
-  const [filterGender, setFilterGender] = useState<Gender | undefined>(
-    undefined
-  )
-  const [filterRole, setFilterRole] = useState<UserRole | undefined>(undefined)
+  const [searchKeyword, setSearchKeyword] = useState<string | null>(null)
+  const [filterGender, setFilterGender] = useState<Gender | null>(null)
+  const [filterRole, setFilterRole] = useState<UserRole | null>(null)
 
   const downloadExcel = () => {
     // TODO: 엑셀 다운로드 API 연동
   }
 
   const resetFilters = () => {
-    setFilterGender(undefined)
-    setFilterRole(undefined)
-    setSearchKeyword(undefined)
+    setFilterGender(null)
+    setFilterRole(null)
+    setSearchKeyword(null)
   }
 
   return (
