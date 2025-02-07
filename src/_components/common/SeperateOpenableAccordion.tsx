@@ -23,19 +23,19 @@ export function SeperateOpenableAccordion(props: SeperateOpenableAccordion) {
   // TODO: props 인식 못하는 에러 수정 필요 (any 타입 캐스팅 제거)
   return (
     <Accordion
-      className="rounded-lg"
+      className="rounded-lg bg-gray-005"
       open={isOpen}
       icon={<IcoAccordionArrow isOpened={isOpen} />}
       {...({} as any)}
     >
       <AccordionHeader
-        className="p-4 border rounded-lg"
+        className="w-full p-4 border rounded-lg bg-white shadow-md"
         onClick={() => setIsOpen((prev) => !prev)}
         {...({} as any)}
       >
         {title}
       </AccordionHeader>
-      <AccordionBody className="p-3 border rounded-b-lg bg-gray-005">
+      <AccordionBody className="w-full p-4 rounded-b-lg bg-gray-005">
         {children}
       </AccordionBody>
     </Accordion>
