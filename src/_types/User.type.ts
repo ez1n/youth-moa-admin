@@ -19,8 +19,10 @@ export interface UserResponse {
   lastLoginedAt: string
 }
 
-export interface GetAllUsersRequest {
-  searchKeyword?: string
+export interface CallGetAllUsersParams {
+  searchKeyword?: string | null
+  roles?: UserRole | null
+  gender?: Gender | null
   page: number
   size: number
 }
