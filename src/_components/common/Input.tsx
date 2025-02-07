@@ -61,7 +61,7 @@ export function Input(props: PropsType) {
       )}
 
       {type === 'search' && (
-        <IcoSearch className="absolute text-black translate-x-0 -translate-y-1/2 cursor-pointer top-1/2 right-4" />
+        <IcoSearch className="absolute text-blue translate-x-0 -translate-y-1/2 cursor-pointer top-1/2 right-4" />
       )}
     </div>
   )

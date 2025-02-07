@@ -38,8 +38,9 @@ export default function UsersPage() {
 
       <div className="flex justify-between">
         {/* 필터 섹션 */}
-        <div className="flex justify-start flex-col">
+        <div className="flex justify-start flex-col gap-y-4">
           <Input
+            className="w-full px-4 py-3 border rounded-lg border-blue"
             type="search"
             placeholder="검색어를 입력해주세요"
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -48,10 +49,10 @@ export default function UsersPage() {
               }
             }}
           />
-          <div className="flex justify-between p-2">
-            <div>필터</div>
+          <div className="flex justify-between items-center p-2 border rounded-lg bg-blue">
+            <div className="text-white px-3 text-xl">필터</div>
             <Button
-              className="p-2 w-100"
+              className="p-2 w-100 text-white"
               onClick={resetFilters}
               icon={<IcoRefresh />}
               type={BUTTON_TYPE.none}

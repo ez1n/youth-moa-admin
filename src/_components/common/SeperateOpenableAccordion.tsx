@@ -29,13 +29,15 @@ export function SeperateOpenableAccordion(props: SeperateOpenableAccordion) {
       {...({} as any)}
     >
       <AccordionHeader
-        className="p-2"
+        className="p-4 border rounded-lg"
         onClick={() => setIsOpen((prev) => !prev)}
         {...({} as any)}
       >
         {title}
       </AccordionHeader>
-      <AccordionBody className="p-3">{children}</AccordionBody>
+      <AccordionBody className="p-3 border rounded-b-lg bg-gray-005">
+        {children}
+      </AccordionBody>
     </Accordion>
   )
 }
