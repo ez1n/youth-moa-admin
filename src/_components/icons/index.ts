@@ -6,3 +6,6 @@ export { IcoDownload } from './IcoDownload'
 export { IcoSearch } from './IcoSearch'
 export { IcoAccordionArrow } from './IcoAccordionArrow'
 export { IcoRefresh } from './IcoRefresh'
+export { IcoAccount } from "./IcoAccount";
+export { IcoLogout } from "./IcoLogout";
+export { IcoAlarm } from "./IcoAlarm";
