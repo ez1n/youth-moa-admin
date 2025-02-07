@@ -1,39 +1,32 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import { Button } from '@/_components/common/Button'
 import { Input } from '@/_components/common/Input'
 import { Title } from '@/_components/common/Title'
-import { Pagination } from '@/_components/common/Pagination'
-import { UserResponse } from '@/_types'
+import { SeperateOpenableAccordion } from '@/_components/common/SeperateOpenableAccordion'
 import { BUTTON_TYPE } from '@/_constants'
-import { IcoDownload } from '@/_components/icons'
-import { callGetAllUsers } from '@/_networks/api/user'
+import { IcoDownload, IcoRefresh } from '@/_components/icons'
 import { UserList } from './components/UserList'
+import { Radio } from '@/_components/common/Radio'
+import { Gender, UserRole } from '@/_types'
 
 export default function UsersPage() {
-  const [currentPage, setCurrentPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
   const [totalUserCount, setTotalUserCount] = useState(0)
-  const [userList, setUserList] = useState<UserResponse[]>([])
+  const [searchKeyword, setSearchKeyword] = useState<string | null>(null)
+  const [filterGender, setFilterGender] = useState<Gender | null>(null)
+  const [filterRole, setFilterRole] = useState<UserRole | null>(null)
 
-  const downloadExcel = () => {}
-
-  const fetchUsers = async () => {
-    try {
-      const response = await callGetAllUsers({ page: currentPage, size: 10 })
-      setUserList(response.content)
-      setTotalPages(response.totalPageCount - 1) // 마지막 페이지는 데이터가 0개이므로 전체페이지 -1해준다.
-      setTotalUserCount(response.totalCount)
-    } catch (error) {
-      console.error('사용자 목록을 불러오는 중 오류 발생:', error)
-    }
+  const downloadExcel = () => {
+    // TODO: 엑셀 다운로드 API 연동
   }
 
-  useEffect(() => {
-    fetchUsers()
-  }, [currentPage]) // 페이지 변경 시 다시 호출
+  const resetFilters = () => {
+    setFilterGender(null)
+    setFilterRole(null)
+    setSearchKeyword(null)
+  }
 
   return (
     <section className="flex-1 flex flex-col items-center justify-center w-full px-5 py-12">
@@ -41,14 +34,55 @@ export default function UsersPage() {
 
       <div className="flex justify-between">
         {/* 필터 섹션 */}
-        <div className="flex justify-start flex-col">
-          <Input type="search" placeholder="검색어를 입력해주세요" />
-          <div className="flex justify-between">
-            <div>필터</div>
-            <div>초기화</div>
+        <div className="flex justify-start flex-col gap-y-4">
+          <Input
+            className="w-full px-4 py-3 border rounded-lg border-blue"
+            type="search"
+            placeholder="검색어를 입력해주세요"
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') {
+                setSearchKeyword(e.currentTarget.value)
+              }
+            }}
+          />
+          <div className="flex justify-between items-center p-2 border rounded-lg bg-blue">
+            <div className="text-white px-3 text-xl">필터</div>
+            <Button
+              className="p-2 w-100 text-white"
+              onClick={resetFilters}
+              icon={<IcoRefresh />}
+            >
+              초기화
+            </Button>
           </div>
-          <div>권한</div>
-          <div>상태</div>
+          <SeperateOpenableAccordion title="권한" defaultOpen={true}>
+            <Radio
+              name="role"
+              label="사용자"
+              checked={filterRole === UserRole.USER}
+              onChange={() => setFilterRole(UserRole.USER)}
+            />
+            <Radio
+              name="role"
+              label="관리자"
+              checked={filterRole === UserRole.ADMIN}
+              onChange={() => setFilterRole(UserRole.ADMIN)}
+            />
+          </SeperateOpenableAccordion>
+          <SeperateOpenableAccordion title="성별" defaultOpen={true}>
+            <Radio
+              name="gender"
+              label="남"
+              checked={filterGender === Gender.남}
+              onChange={() => setFilterGender(Gender.남)}
+            />
+            <Radio
+              name="gender"
+              label="여"
+              checked={filterGender === Gender.여}
+              onChange={() => setFilterGender(Gender.여)}
+            />
+          </SeperateOpenableAccordion>
         </div>
 
         {/* 목록 섹션 */}
@@ -66,11 +100,11 @@ export default function UsersPage() {
               </Button>
             </div>
           </div>
-          <UserList users={userList} />
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage} />
+          <UserList
+            onTotalCountChange={setTotalUserCount}
+            searchKeyword={searchKeyword}
+            filter={{ gender: filterGender, role: filterRole }}
+          />
         </div>
       </div>
     </section>

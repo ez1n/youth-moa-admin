@@ -27,12 +27,24 @@ export function Button(props: PropsType) {
     ...rest
   } = props
 
-  const bgColorName = type === BUTTON_TYPE.outlined ? '' : 'bg-blue'
-  const textColorName = isError
-    ? 'text-red'
-    : type === BUTTON_TYPE.outlined
-    ? 'text-blue'
-    : 'text-white'
+  const bgColorName = (() => {
+    switch (type) {
+      case BUTTON_TYPE.outlined:
+        return ''
+      default:
+        return 'bg-blue'
+    }
+  })()
+  const textColorName = (() => {
+    switch (true) {
+      case isError:
+        return 'text-red'
+      case type === BUTTON_TYPE.outlined:
+        return 'text-blue'
+      default:
+        return 'text-white'
+    }
+  })()
   const borderColorName = isError
     ? 'border-red'
     : type === BUTTON_TYPE.outlined

@@ -1,21 +1,21 @@
-import { ComponentProps, useId } from "react";
-import { tw } from "../../../tailwindmerge.config";
+import { ComponentProps, useId } from 'react'
+import { tw } from '../../../tailwindmerge.config'
 
-interface PropsType extends ComponentProps<"input"> {
-  label: string;
+interface PropsType extends ComponentProps<'input'> {
+  label: string
 }
 
 export function Radio(props: PropsType) {
   const { label, value, name, disabled, defaultChecked, onChange, ...rest } =
-    props;
+    props
 
-  const radioId = useId();
+  const radioId = useId()
 
   return (
     <label
       className={tw(
-        "flex gap-2 w-fit items-center relative cursor-pointer mx-2",
-        disabled && "cursor-not-allowed"
+        'flex gap-2 w-fit items-center relative cursor-pointer mx-2',
+        disabled && 'cursor-not-allowed'
       )}
       htmlFor={radioId}
     >
@@ -39,5 +39,5 @@ export function Radio(props: PropsType) {
         </span>
       )}
     </label>
-  );
+  )
 }
