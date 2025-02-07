@@ -55,7 +55,6 @@ export default function UsersPage() {
               className="p-2 w-100 text-white"
               onClick={resetFilters}
               icon={<IcoRefresh />}
-              type={BUTTON_TYPE.none}
             >
               초기화
             </Button>

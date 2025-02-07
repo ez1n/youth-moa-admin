@@ -5,7 +5,7 @@ import { BUTTON_TYPE } from '@/_constants'
 import { tw } from '../../../tailwindmerge.config'
 
 interface PropsType extends Omit<ComponentProps<'button'>, 'type'> {
-  type?: 'fill' | 'outlined' | 'none'
+  type?: 'fill' | 'outlined'
   rounded?: 'small' | 'large'
   isError?: boolean
   color?: string
@@ -29,7 +29,7 @@ export function Button(props: PropsType) {
 
   const bgColorName = (() => {
     switch (type) {
-      case (BUTTON_TYPE.outlined, BUTTON_TYPE.none):
+      case BUTTON_TYPE.outlined:
         return ''
       default:
         return 'bg-blue'
@@ -41,8 +41,6 @@ export function Button(props: PropsType) {
         return 'text-red'
       case type === BUTTON_TYPE.outlined:
         return 'text-blue'
-      case type === BUTTON_TYPE.none:
-        return 'text-gray-400'
       default:
         return 'text-white'
     }
