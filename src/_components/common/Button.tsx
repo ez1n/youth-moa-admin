@@ -12,6 +12,7 @@ interface PropsType extends Omit<ComponentProps<'button'>, 'type'> {
   className?: string
   onClick: () => void
   icon?: ReactNode
+  iconPosition?: 'left' | 'right'
 }
 
 export function Button(props: PropsType) {
@@ -24,6 +25,7 @@ export function Button(props: PropsType) {
     className,
     onClick,
     icon,
+    iconPosition = 'left',
     ...rest
   } = props
 
@@ -69,8 +71,13 @@ export function Button(props: PropsType) {
       onClick={onClick}
       {...rest}
     >
-      {icon && <span className="mr-2 flex justify-center">{icon}</span>}{' '}
+      {iconPosition === 'left' && icon && (
+        <span className="mr-2 flex justify-center">{icon}</span>
+      )}
       {children}
+      {iconPosition === 'right' && icon && (
+        <span className="ml-2 flex justify-center">{icon}</span>
+      )}
     </button>
   )
 }

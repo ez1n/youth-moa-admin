@@ -8,7 +8,7 @@ import { Cell, CellLabel } from '../components/Cell'
 
 export const UserInfoDetail = () => {
   return (
-    <section className="border w-full h-full rounded-xl">
+    <section className="border w-full h-full rounded-xl shadow-md">
       <h2 className="text-xl font-bold mb-4 py-5 px-10 my-3">회원정보</h2>
       <table className="w-full border-separate border-spacing-y-4 px-8">
         <tbody className="">
