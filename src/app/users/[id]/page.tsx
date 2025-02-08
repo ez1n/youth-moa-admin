@@ -8,10 +8,10 @@ export default function UserDetailPage() {
     <section className="flex-1 flex flex-col items-center justify-center w-full px-5 py-12">
       <Title title="사용자 관리" />
       <section className="flex justify-between items-center bg-white rounded-xl shadow-md">
-        <div className="p-4">
+        <div className="p-4 h-full">
           <UserInfoDetail />
         </div>
-        <div className="p-4">
+        <div className="p-4 h-full">
           <UserProgramDetail />
         </div>
       </section>

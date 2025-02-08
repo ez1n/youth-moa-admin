@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { RadioButton } from '@/_components/common/RadioButton'
 import { ProgramApplicationCard } from './ProgramApplicationCard'
 
@@ -37,7 +37,27 @@ const dummyCards = [
 export const UserProgramDetail = () => {
   const [selected, setSelected] = useState('전체')
   const 프로그램신청현황상태 = ['전체', '대기', '승인', '반려', '취소']
-  const applications = dummyCards
+  const allApplications = dummyCards
+  const [applications, setApplications] = useState(allApplications)
+  const [tabAnimate, setTabAnimate] = useState(false)
+
+  useEffect(() => {
+    setTabAnimate(true)
+    setApplications(
+      allApplications.filter((application) => {
+        if (selected === '전체') return true
+        return application.programApplicationStatus === selected
+      })
+    )
+  }, [selected])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTabAnimate(false)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [applications])
 
   return (
     <section>
@@ -58,13 +78,21 @@ export const UserProgramDetail = () => {
           ))}
         </div>
       </section>
-      <section className="max-h-[825px] overflow-y-auto">
-        {applications.map((application) => (
-          <ProgramApplicationCard
-            key={application.applicationId}
-            {...application}
-          />
-        ))}
+      <section className="max-h-[800vh] overflow-y-auto">
+        <div
+          className={`transition-transform duration-100 ease-out ${
+            tabAnimate
+              ? 'transform translate-y-0 opacity-0'
+              : 'transform translate-y-2 opacity-100'
+          }`}
+        >
+          {applications.map((application) => (
+            <ProgramApplicationCard
+              key={application.applicationId}
+              {...application}
+            />
+          ))}
+        </div>
       </section>
     </section>
   )
