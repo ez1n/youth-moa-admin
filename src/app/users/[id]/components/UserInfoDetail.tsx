@@ -5,8 +5,18 @@ import { IcoSearch } from '@/_components/icons'
 import { DatePicker } from '@/_components/common/DatePicker'
 import { Row } from '../components/Row'
 import { Cell, CellLabel } from '../components/Cell'
+import { SearchAddress } from '@/_components/common/SearchAddress'
+
+import { useState } from 'react'
 
 export const UserInfoDetail = () => {
+  const [searchAddressPopup, setSearchAddressPopup] = useState(false)
+  const [address, setAddress] = useState('')
+
+  const handleComplete = () => {
+    setSearchAddressPopup(!searchAddressPopup)
+  }
+
   return (
     <section className="border w-full h-full rounded-xl shadow-md">
       <h2 className="text-xl font-bold mb-4 py-5 px-10 my-3">회원정보</h2>
@@ -65,13 +75,13 @@ export const UserInfoDetail = () => {
           <Row>
             <CellLabel label="주소" />
             <Cell>
-              <Input></Input>
+              <Input disabled value={address}></Input>
             </Cell>
             <Cell>
               <Button
                 className="p-3"
                 icon={<IcoSearch />}
-                onClick={console.log}
+                onClick={handleComplete}
               >
                 재검색
               </Button>
@@ -80,7 +90,7 @@ export const UserInfoDetail = () => {
           <Row>
             <Cell> </Cell>
             <Cell>
-              <Input></Input>
+              <Input placeholder="상세주소"></Input>
             </Cell>
           </Row>
 
@@ -107,6 +117,12 @@ export const UserInfoDetail = () => {
           </Row>
         </tbody>
       </table>
+      {searchAddressPopup && (
+        <SearchAddress
+          setAddress={setAddress}
+          handleComplete={handleComplete}
+        ></SearchAddress>
+      )}
     </section>
   )
 }
