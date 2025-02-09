@@ -1,8 +1,10 @@
-type IconProps = {
+import type { IconProps } from './type'
+
+interface IcoArrowProps extends IconProps {
   direction: 'up' | 'down' | 'left' | 'right'
 }
 
-export const IcoArrow = (props: IconProps) => {
+export const IcoArrow = (props: IcoArrowProps) => {
   const { direction } = props
   return (
     <svg
