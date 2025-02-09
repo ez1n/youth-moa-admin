@@ -1,6 +1,10 @@
 import { api } from '../axios.config'
 import { USERS_PREFIX } from '../const'
-import { CallGetAllUsersParams, UserResponse } from '@/_types/user.type'
+import {
+  CallGetAllUsersParams,
+  CallPutUpdateUserInfoRequestBody,
+  UserResponse,
+} from '@/_types/user.type'
 import { PageResponse } from '@/_types/pagination.type'
 import { downloadByBrowser } from '../util'
 
@@ -21,4 +25,17 @@ export const callGetDownloadExcel = async () => {
   })
   let filename = `${new Date().toLocaleDateString()} 사용자목록.xlsx`
   downloadByBrowser(filename, response)
+}
+
+export const callGetUser = async (userId: number) => {
+  const response = await api.get<UserResponse>(`${USERS_PREFIX}/${userId}`)
+  return response.data
+}
+
+export const callPutUpdateUserInfo = async (
+  userId: number,
+  requestBody: CallPutUpdateUserInfoRequestBody
+) => {
+  const response = await api.put(`${USERS_PREFIX}/${userId}`, requestBody)
+  return response.data
 }
