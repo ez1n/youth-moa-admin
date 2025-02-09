@@ -48,7 +48,7 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="이름" />
             <Cell>
-              <Input />
+              <Input placeholder="이름을 입력해주세요" />
             </Cell>
           </tr>
 
@@ -64,7 +64,7 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="핸드폰 번호" />
             <Cell>
-              <Input />
+              <Input placeholder="핸드폰 번호를 입력해주세요" />
             </Cell>
           </tr>
 
@@ -86,7 +86,7 @@ export const UserInfoDetail = () => {
           <tr>
             <Cell> </Cell>
             <Cell>
-              <Input placeholder="상세주소" />
+              <Input placeholder="상세주소를 입력해주세요" />
             </Cell>
           </tr>
 
