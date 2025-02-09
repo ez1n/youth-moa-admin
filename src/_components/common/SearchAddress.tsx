@@ -31,9 +31,15 @@ export const SearchAddress = (props: SearchAddressProps) => {
   return (
     <div className="flex flex-col fixed inset-0 flex items-center justify-center bg-black z-10 bg-opacity-30">
       <div className="w-500 bg-white p-5 rounded-lg shadow-lg">
-        <Button className="flex w-10 h-10" onClick={handleComplete}>
-          X
-        </Button>
+        <div className="flex justify-end mx-3">
+          <Button
+            className="flex border-none bg-white text-black w-10 h-10"
+            onClick={handleComplete}
+          >
+            X
+          </Button>
+        </div>
+
         <DaumPostcode
           autoClose
           style={{

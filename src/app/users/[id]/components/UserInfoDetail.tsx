@@ -13,7 +13,7 @@ export const UserInfoDetail = () => {
   const [searchAddressPopup, setSearchAddressPopup] = useState(false)
   const [address, setAddress] = useState('')
 
-  const handleComplete = () => {
+  const handleSearchAddressPopup = () => {
     setSearchAddressPopup(!searchAddressPopup)
   }
 
@@ -81,7 +81,7 @@ export const UserInfoDetail = () => {
               <Button
                 className="p-3"
                 icon={<IcoSearch />}
-                onClick={handleComplete}
+                onClick={handleSearchAddressPopup}
               >
                 재검색
               </Button>
@@ -120,7 +120,7 @@ export const UserInfoDetail = () => {
       {searchAddressPopup && (
         <SearchAddress
           setAddress={setAddress}
-          handleComplete={handleComplete}
+          handleComplete={handleSearchAddressPopup}
         ></SearchAddress>
       )}
     </section>
