@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { IcoAccount, IcoLogout, Logo } from "../icons";
 import { useAuth } from "@/_hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Header() {
-  const { logout } = useAuth();
+  const router = useRouter();
+  const { logout, checkLogin } = useAuth();
+
+  useEffect(() => {
+    if (!checkLogin()) {
+      return router.replace("/login");
+    }
+  }, []);
 
   return (
     <header className="fixed top-0 flex items-center justify-between shadow-header bg-white px-10 z-50 w-full h-20">
