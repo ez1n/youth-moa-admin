@@ -11,6 +11,7 @@ import { IcoDownload, IcoRefresh } from '@/_components/icons'
 import { UserList } from './components/UserList'
 import { Radio } from '@/_components/common/Radio'
 import { Gender, UserRole } from '@/_types'
+import { callGetDownloadExcel } from '@/_networks/api/user'
 
 export default function UsersPage() {
   const [totalUserCount, setTotalUserCount] = useState(0)
@@ -18,8 +19,12 @@ export default function UsersPage() {
   const [filterGender, setFilterGender] = useState<Gender | null>(null)
   const [filterRole, setFilterRole] = useState<UserRole | null>(null)
 
-  const downloadExcel = () => {
-    // TODO: 엑셀 다운로드 API 연동
+  const downloadExcel = async () => {
+    try {
+      await callGetDownloadExcel()
+    } catch (error: any) {
+      console.error(error)
+    }
   }
 
   const resetFilters = () => {
