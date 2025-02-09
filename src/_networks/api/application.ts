@@ -1,10 +1,19 @@
 import { api } from '../axios.config'
-import { USERS_PREFIX } from '../const'
-import { CallGetAllApplicationsResponse } from '@/_types/application.type'
+import { APPLICATIONS_PREFIX } from '../const'
+import {
+  ApplicationStatus,
+  CallGetAllApplicationsResponse,
+} from '@/_types/application.type'
 
-export const callGetAllApplications = async (userId: number) => {
+export const callGetAllApplications = async (
+  userId: number,
+  applicationStatus: ApplicationStatus | null
+) => {
   const response = await api.get<CallGetAllApplicationsResponse>(
-    `${USERS_PREFIX}`
+    `${APPLICATIONS_PREFIX}/by-user-id`,
+    {
+      params: { userId, applicationStatus },
+    }
   )
   return response.data
 }

@@ -8,7 +8,7 @@ import { Cell, CellLabel } from '../components/Cell'
 import { SearchAddress } from '@/_components/common/SearchAddress'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { useState, ChangeEvent } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import { callGetUser, callPutUpdateUserInfo } from '@/_networks/api/user'
 
 import {
@@ -33,14 +33,30 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
 
   const [updateUserInfoRequestBody, setUpdateUserInfoRequestBody] =
     useState<CallPutUpdateUserInfoRequestBody>({
-      newAddress: address ?? '',
+      newAddress: data?.address ?? '',
       newAddressDetail: data?.addressDetail ?? '',
       newBirthday: data?.birthday ?? '',
       newGender: data?.gender ?? Gender.남,
       newName: data?.name ?? '',
       newPassword: '',
-      newPhone: '',
+      newPhone: data?.phone ?? '',
     })
+
+  // 오토필
+  useEffect(() => {
+    if (data) {
+      setAddress(data.address)
+      setUpdateUserInfoRequestBody({
+        newAddress: data.address,
+        newAddressDetail: data.addressDetail,
+        newBirthday: data.birthday,
+        newGender: data.gender,
+        newName: data.name,
+        newPassword: '',
+        newPhone: data.phone,
+      })
+    }
+  }, [data])
 
   const mutation = useMutation<
     ResponseType,

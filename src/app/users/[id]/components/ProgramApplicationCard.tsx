@@ -3,7 +3,6 @@ import { IcoArrow } from '@/_components/icons'
 import { tw } from '../../../../../tailwindmerge.config'
 
 interface ProgramApplicationCardProps {
-  applicationId: number
   imageId?: number
   programName: string
   programApplicationStatus: string

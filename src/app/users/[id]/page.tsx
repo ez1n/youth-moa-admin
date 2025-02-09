@@ -1,7 +1,7 @@
 'use client'
 import { Title } from '@/_components/common/Title'
 import { UserInfoDetail } from './components/UserInfoDetail'
-import { UserProgramDetail } from './components/UserProgramApplicationDetail'
+import { UserProgramApplicationDetail } from './components/UserProgramApplicationDetail'
 import { useParams } from 'next/navigation'
 
 /**
@@ -17,12 +17,12 @@ export default function UserDetailPage() {
   return (
     <section className="flex-1 flex flex-col items-center justify-center w-full px-5 py-12">
       <Title title="사용자 관리" />
-      <section className="flex justify-between items-center bg-white rounded-xl shadow-md">
-        <div className="p-4 h-full">
+      <section className="flex flex-col sm:flex-row gap-4 w-full">
+        <div className="flex-1 p-4 h-full">
           <UserInfoDetail userId={userId} />
         </div>
-        <div className="p-4 h-full">
-          <UserProgramDetail />
+        <div className="flex-1 p-4 h-full">
+          <UserProgramApplicationDetail userId={userId} />
         </div>
       </section>
     </section>
