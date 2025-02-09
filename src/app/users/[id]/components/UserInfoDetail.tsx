@@ -3,14 +3,103 @@ import { Radio } from '@/_components/common/Radio'
 import { Button } from '@/_components/common/Button'
 import { IcoSearch } from '@/_components/icons'
 import { DatePicker } from '@/_components/common/DatePicker'
+import { Alert } from '@/_components/common/Alert'
 import { Cell, CellLabel } from '../components/Cell'
 import { SearchAddress } from '@/_components/common/SearchAddress'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { useState } from 'react'
+import { useState, ChangeEvent } from 'react'
+import { callGetUser, callPutUpdateUserInfo } from '@/_networks/api/user'
 
-export const UserInfoDetail = () => {
+import {
+  UserResponse,
+  Gender,
+  UserRole,
+  CallPutUpdateUserInfoRequestBody,
+} from '@/_types'
+
+interface UserInfoDetailProps {
+  userId: number
+}
+
+export const UserInfoDetail = (props: UserInfoDetailProps) => {
+  const { userId } = props
   const [searchAddressPopup, setSearchAddressPopup] = useState(false)
-  const [address, setAddress] = useState('')
+  const { data, isLoading, isError } = useQuery<UserResponse>({
+    queryKey: [userId],
+    queryFn: () => callGetUser(userId),
+  })
+  const [address, setAddress] = useState(data?.address)
+
+  const [updateUserInfoRequestBody, setUpdateUserInfoRequestBody] =
+    useState<CallPutUpdateUserInfoRequestBody>({
+      newAddress: address ?? '',
+      newAddressDetail: data?.addressDetail ?? '',
+      newBirthday: data?.birthday ?? '',
+      newGender: data?.gender ?? Gender.남,
+      newName: data?.name ?? '',
+      newPassword: '',
+      newPhone: '',
+    })
+
+  const mutation = useMutation<
+    ResponseType,
+    Error,
+    CallPutUpdateUserInfoRequestBody
+  >({
+    mutationFn: (requestBody) => callPutUpdateUserInfo(userId, requestBody),
+  })
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setUpdateUserInfoRequestBody((prev) => ({ ...prev, [name]: value }))
+    console.log(updateUserInfoRequestBody)
+  }
+
+  const [isShowAlert, setIsShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
+  const [isSuccessAlert, setIsSuccessAlert] = useState(false)
+
+  const validate = () => {
+    let validateErrorMessage = ''
+    if (!updateUserInfoRequestBody.newPassword) {
+      validateErrorMessage = '비밀번호를 입력해주세요.'
+    }
+
+    if (!updateUserInfoRequestBody.newName) {
+      validateErrorMessage = '이름을 입력해주세요.'
+    }
+
+    if (!updateUserInfoRequestBody.newPhone) {
+      validateErrorMessage = '핸드폰 번호를 입력해주세요.'
+    }
+
+    if (!updateUserInfoRequestBody.newAddressDetail) {
+      validateErrorMessage = '상세주소를 입력해주세요.'
+    }
+
+    if (validateErrorMessage.length > 1) {
+      setAlertMessage(validateErrorMessage)
+      setIsShowAlert(true)
+    }
+  }
+
+  const updateUserInfo = async () => {
+    validate()
+    try {
+      // SearchAddress에서 받아온 주소를 reqeustBody에 저장
+      setUpdateUserInfoRequestBody({
+        ...updateUserInfoRequestBody,
+        newAddress: address ?? '',
+      })
+      await mutation.mutateAsync(updateUserInfoRequestBody)
+      setAlertMessage('정상적으로 수정되었습니다')
+      setIsSuccessAlert(true)
+    } catch (e: any) {
+      setAlertMessage(e.response.data.message)
+      setIsShowAlert(true)
+    }
+  }
 
   const handleSearchAddressPopup = () => {
     setSearchAddressPopup(!searchAddressPopup)
@@ -24,19 +113,25 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="아이디" />
             <Cell>
-              <Input disabled />
+              <Input value={data?.email} disabled />
             </Cell>
           </tr>
 
           <tr>
-            <CellLabel label="비밀번호" />
+            <CellLabel label="새 비밀번호" />
             <Cell>
-              <Input type="password" placeholder="비밀번호를 입력해주세요" />
+              <Input
+                onChange={onChange}
+                value={updateUserInfoRequestBody.newPassword}
+                name="newPassword"
+                type="password"
+                placeholder="비밀번호를 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
-            <CellLabel label="비밀번호 확인" />
+            <CellLabel label="새 비밀번호 확인" />
             <Cell>
               <Input
                 type="password"
@@ -48,15 +143,30 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="이름" />
             <Cell>
-              <Input placeholder="이름을 입력해주세요" />
+              <Input
+                value={updateUserInfoRequestBody.newName}
+                name="newName"
+                onChange={onChange}
+                placeholder="이름을 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="권한" />
             <Cell className="flex">
-              <Radio disabled name="role" label="사용자" />
-              <Radio disabled name="role" label="관리자" />
+              <Radio
+                disabled
+                name="role"
+                checked={data?.role === UserRole.USER}
+                label="사용자"
+              />
+              <Radio
+                disabled
+                name="role"
+                checked={data?.role === UserRole.ADMIN}
+                label="관리자"
+              />
               <Radio disabled name="role" label="시스템관리자" />
             </Cell>
           </tr>
@@ -64,14 +174,24 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="핸드폰 번호" />
             <Cell>
-              <Input placeholder="핸드폰 번호를 입력해주세요" />
+              <Input
+                onChange={onChange}
+                name="newPhone"
+                value={updateUserInfoRequestBody.newPhone}
+                placeholder="핸드폰 번호를 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="주소" />
             <Cell>
-              <Input disabled value={address} />{' '}
+              <Input
+                onChange={onChange}
+                name="newAddress"
+                value={address}
+                disabled
+              />{' '}
             </Cell>
             <Cell>
               <Button
@@ -86,29 +206,48 @@ export const UserInfoDetail = () => {
           <tr>
             <Cell> </Cell>
             <Cell>
-              <Input placeholder="상세주소를 입력해주세요" />
+              <Input
+                onChange={onChange}
+                name="newAddressDetail"
+                value={updateUserInfoRequestBody.newAddressDetail}
+                placeholder="상세주소를 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="성별" />
             <Cell className="flex justify-between">
-              <Radio name="gender" label="남" />
-              <Radio name="gender" label="여" />
+              <Radio
+                onChange={onChange}
+                name="newGender"
+                value={updateUserInfoRequestBody.newGender}
+                label="남"
+              />
+              <Radio
+                onChange={onChange}
+                name="newGender"
+                value={updateUserInfoRequestBody.newGender}
+                label="여"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="생년월일" />
             <Cell>
-              <DatePicker />
+              <DatePicker
+                onChange={onChange}
+                name="newBirthday"
+                value={updateUserInfoRequestBody.newBirthday}
+              />
             </Cell>
           </tr>
 
           <tr>
             <Cell> </Cell>
             <Cell className="px-12">
-              <Button onClick={console.log}>저장</Button>
+              <Button onClick={updateUserInfo}>저장</Button>
             </Cell>
           </tr>
         </tbody>
@@ -117,6 +256,16 @@ export const UserInfoDetail = () => {
         <SearchAddress
           setAddress={setAddress}
           handleComplete={handleSearchAddressPopup}
+        />
+      )}
+      {isShowAlert && (
+        <Alert message={alertMessage} onClick={() => setIsShowAlert(false)} />
+      )}
+      {isSuccessAlert && (
+        <Alert
+          type="success"
+          message={alertMessage}
+          onClick={() => setIsSuccessAlert(false)}
         />
       )}
     </section>
