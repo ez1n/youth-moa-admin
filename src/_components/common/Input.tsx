@@ -2,7 +2,7 @@ import { ChangeEvent, ComponentProps, useState } from 'react'
 import { IcoEye, IcoEyeSlash, IcoSearch } from '../icons'
 import { tw } from '../../../tailwindmerge.config'
 
-export type InputType = 'text' | 'password' | 'number' | 'search'
+type InputType = 'text' | 'password' | 'number' | 'search'
 
 interface PropsType extends ComponentProps<'input'> {
   type?: InputType
