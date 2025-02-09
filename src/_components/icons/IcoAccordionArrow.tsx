@@ -1,8 +1,10 @@
-type IconProps = {
+import type { IconProps } from './type'
+
+interface IcoAccordionArrowProps extends IconProps {
   isOpened: boolean
 }
 
-export const IcoAccordionArrow = (props: IconProps) => {
+export const IcoAccordionArrow = (props: IcoAccordionArrowProps) => {
   const { isOpened } = props
   return (
     <svg

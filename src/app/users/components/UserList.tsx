@@ -4,6 +4,7 @@ import { formatHyphenPhone, formatDate } from '@/_utils/format.util'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { callGetAllUsers } from '@/_networks/api/user'
+import { useRouter } from 'next/navigation'
 
 import { UserRole, Gender } from '@/_types'
 
@@ -22,6 +23,7 @@ export const UserList = (props: UserListProps) => {
   const { onTotalCountChange, searchKeyword, filter } = props
   const { gender, role } = filter
   const [currentPage, setCurrentPage] = useState(0)
+  const router = useRouter()
   const { data, isLoading, isError } = useQuery({
     queryKey: ['users', currentPage, searchKeyword, gender, role],
     queryFn: () =>
@@ -61,7 +63,11 @@ export const UserList = (props: UserListProps) => {
         </thead>
         <tbody>
           {data?.content.map((user, index) => (
-            <tr key={index} className="border-b">
+            <tr
+              key={index}
+              className="border-b cursor-pointer transition duration-200 hover:bg-blue-50 hover:shadow-md hover:scale-[1.02]"
+              onClick={() => router.push(`/users/${user.id}`)}
+            >
               <td className="p-2">{user.name}</td>
               <td className="p-2">{user.email}</td>
               <td className="p-2">{user.role}</td>
