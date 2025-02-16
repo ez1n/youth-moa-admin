@@ -2,7 +2,7 @@ import { api } from '../axios.config';
 import { USERS_PREFIX } from '../const';
 import {
   CallGetAllUsersParams,
-  CallPutUpdateUserInfoRequestBody as CallPutUserInfoRequestBody,
+  CallPutUserInfoRequestBody,
   UserResponse,
 } from '@/_types/user.type';
 import { PageResponse } from '@/_types/pagination.type';

@@ -18,7 +18,7 @@ import {
   UserResponse,
   Gender,
   UserRole,
-  CallPutUpdateUserInfoRequestBody,
+  CallPutUserInfoRequestBody,
 } from '@/_types';
 
 interface UserInfoDetailProps {
@@ -34,7 +34,7 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
   });
 
   const [updateUserInfoRequestBody, setUpdateUserInfoRequestBody] =
-    useState<CallPutUpdateUserInfoRequestBody>({
+    useState<CallPutUserInfoRequestBody>({
       newAddress: data?.address ?? '',
       newAddressDetail: data?.addressDetail ?? '',
       newBirthday: data?.birthday ?? '',
@@ -60,7 +60,7 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
   }, [data]);
 
   const mutation = useMutation({
-    mutationFn: (requestBody: CallPutUpdateUserInfoRequestBody) =>
+    mutationFn: (requestBody: CallPutUserInfoRequestBody) =>
       callPutUserInfo(userId, requestBody),
   });
 
