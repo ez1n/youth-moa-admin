@@ -1,17 +1,27 @@
-import { Button } from '@/_components/common/Button'
-import { IcoArrow } from '@/_components/icons'
-import { tw } from '../../../../../tailwindmerge.config'
+import { Button } from '@/_components/common/Button';
+import { IcoArrow } from '@/_components/icons';
+import { tw } from '../../../../../tailwindmerge.config';
+
+import { useState } from 'react';
+import { ApplicationDetailModal } from './ApplicationDetailModal';
 
 interface ProgramApplicationCardProps {
-  imageId?: number
-  programName: string
-  programApplicationStatus: string
-  programAppliedAt: string
+  imageId?: number;
+  programName: string;
+  programApplicationStatus: string;
+  programAppliedAt: string;
+  onClick: () => void;
 }
 
 export const ProgramApplicationCard = (props: ProgramApplicationCardProps) => {
-  const { imageId, programName, programApplicationStatus, programAppliedAt } =
-    props
+  const {
+    imageId,
+    programName,
+    programApplicationStatus,
+    programAppliedAt,
+    onClick,
+  } = props;
+
   return (
     <div className="border rounded-xl flex p-4 my-5 flex flex-col shadow-md">
       <div className="flex justify-between mx-10 items-center">
@@ -21,7 +31,7 @@ export const ProgramApplicationCard = (props: ProgramApplicationCardProps) => {
           type="outlined"
           icon={<IcoArrow direction="right" />}
           iconPosition="right"
-          onClick={console.log}
+          onClick={onClick}
         >
           신청 상세
         </Button>
@@ -50,5 +60,5 @@ export const ProgramApplicationCard = (props: ProgramApplicationCardProps) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

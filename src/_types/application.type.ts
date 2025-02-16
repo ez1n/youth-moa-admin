@@ -13,6 +13,7 @@ export interface CallGetAllApplicationsResponse {
 }
 
 export interface ApplicationResponse {
+  applicationId: number;
   applierInfo: UserResponse;
   programInfo: ProgramInfoResponse;
   status: ApplicationStatus;

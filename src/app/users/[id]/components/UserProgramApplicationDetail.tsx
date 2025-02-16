@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { callGetAllApplications } from '@/_networks/api/application';
 import { ApplicationStatus } from '@/_types';
 import { LoadingSpinner } from '@/_components/common/LoadingSpinner';
+import { ApplicationDetailModal } from './ApplicationDetailModal';
 
 interface UserProgramApplicationDetailProps {
   userId: number;
@@ -21,6 +22,10 @@ export const UserProgramApplicationDetail = (
     반려: ApplicationStatus.반려,
     취소: ApplicationStatus.취소,
   };
+  const [modalOpen, setModalOpen] = useState({
+    isOpend: false,
+    applicationId: 0,
+  });
   const [filterStatus, setFilterStatus] = useState('전체');
   const { data, isLoading, isError } = useQuery({
     queryKey: [userId, filterStatus],
@@ -54,6 +59,12 @@ export const UserProgramApplicationDetail = (
             {isError && <div>데이터를 불러오는 중 오류 발생</div>}
             {data?.applications.map((application) => (
               <ProgramApplicationCard
+                onClick={() =>
+                  setModalOpen({
+                    isOpend: true,
+                    applicationId: application.applicationId,
+                  })
+                }
                 imageId={application.programInfo.programImageFileId}
                 programName={application.programInfo.title}
                 programApplicationStatus={application.status}
@@ -92,6 +103,17 @@ export const UserProgramApplicationDetail = (
         <ApplicationListEmpty />
       ) : (
         <ApplicationList />
+      )}
+      {modalOpen.isOpend && (
+        <ApplicationDetailModal
+          applicationId={modalOpen.applicationId}
+          onCancel={() =>
+            setModalOpen({
+              isOpend: false,
+              applicationId: 0,
+            })
+          }
+        />
       )}
     </section>
   );
