@@ -9,7 +9,7 @@ import { SearchAddress } from '@/_components/common/SearchAddress'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { useState, useEffect, ChangeEvent } from 'react'
-import { callGetUser, callPutUpdateUserInfo } from '@/_networks/api/user'
+import { callGetUser, callPutUserInfo } from '@/_networks/api/user'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -66,7 +66,7 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
     Error,
     CallPutUpdateUserInfoRequestBody
   >({
-    mutationFn: (requestBody) => callPutUpdateUserInfo(userId, requestBody),
+    mutationFn: (requestBody) => callPutUserInfo(userId, requestBody),
   })
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -100,11 +100,16 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
     if (validateErrorMessage.length > 1) {
       setAlertMessage(validateErrorMessage)
       setIsShowAlert(true)
+      return false
+    } else {
+      return true
     }
   }
 
   const updateUserInfo = async () => {
-    validate()
+    if (validate() === false) {
+      return
+    }
     try {
       // SearchAddress에서 받아온 주소를 reqeustBody에 저장
       setUpdateUserInfoRequestBody({

@@ -2,7 +2,7 @@ import { api } from '../axios.config'
 import { USERS_PREFIX } from '../const'
 import {
   CallGetAllUsersParams,
-  CallPutUpdateUserInfoRequestBody,
+  CallPutUpdateUserInfoRequestBody as CallPutUserInfoRequestBody,
   UserResponse,
 } from '@/_types/user.type'
 import { PageResponse } from '@/_types/pagination.type'
@@ -32,9 +32,9 @@ export const callGetUser = async (userId: number) => {
   return response.data
 }
 
-export const callPutUpdateUserInfo = async (
+export const callPutUserInfo = async (
   userId: number,
-  requestBody: CallPutUpdateUserInfoRequestBody
+  requestBody: CallPutUserInfoRequestBody
 ) => {
   const response = await api.put(`${USERS_PREFIX}/${userId}`, requestBody)
   return response.data
