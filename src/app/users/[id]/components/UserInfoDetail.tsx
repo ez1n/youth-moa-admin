@@ -11,6 +11,9 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState, useEffect, ChangeEvent } from 'react'
 import { callGetUser, callPutUpdateUserInfo } from '@/_networks/api/user'
 
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
+
 import {
   UserResponse,
   Gender,
@@ -119,6 +122,30 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
 
   const handleSearchAddressPopup = () => {
     setSearchAddressPopup(!searchAddressPopup)
+  }
+
+  if (isLoading) {
+    return (
+      <section className="border w-full h-full rounded-xl shadow-md p-6">
+        <h2 className="text-xl font-bold mb-4">
+          <Skeleton width={150} />
+        </h2>
+        <table className="w-full border-separate border-spacing-y-4">
+          <tbody>
+            {[...Array(6)].map((_, index) => (
+              <tr key={index}>
+                <Cell>
+                  <Skeleton width={80} />
+                </Cell>
+                <Cell>
+                  <Skeleton height={40} />
+                </Cell>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    )
   }
 
   return (
