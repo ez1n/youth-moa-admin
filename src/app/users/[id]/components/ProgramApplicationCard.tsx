@@ -2,8 +2,7 @@ import { Button } from '@/_components/common/Button';
 import { IcoArrow } from '@/_components/icons';
 import { tw } from '../../../../../tailwindmerge.config';
 
-import { useState } from 'react';
-import { ApplicationDetailModal } from './ApplicationDetailModal';
+import { formatDateTime } from '@/_utils';
 
 interface ProgramApplicationCardProps {
   imageId?: number;
@@ -25,7 +24,9 @@ export const ProgramApplicationCard = (props: ProgramApplicationCardProps) => {
   return (
     <div className="border rounded-xl flex p-4 my-5 flex flex-col shadow-md">
       <div className="flex justify-between mx-10 items-center">
-        <div className="px-3 text-gray-500">{programAppliedAt}</div>
+        <div className="px-3 text-gray-500">
+          {formatDateTime(programAppliedAt)}
+        </div>
         <Button
           className="text-gray-500 border-none px-1 w-50"
           type="outlined"
@@ -56,7 +57,9 @@ export const ProgramApplicationCard = (props: ProgramApplicationCardProps) => {
             </div>
           </div>
 
-          <div className="text-gray-500">{programAppliedAt}</div>
+          <div className="text-gray-500">
+            {formatDateTime(programAppliedAt)}
+          </div>
         </div>
       </div>
     </div>

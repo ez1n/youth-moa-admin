@@ -9,6 +9,8 @@ import { IcoArrow } from '@/_components/icons';
 import { callGetApplication } from '@/_networks/api/application';
 import { LoadingSpinner } from '@/_components/common/LoadingSpinner';
 
+import { formatHyphenPhone, formatDateTime } from '@/_utils';
+
 interface ApplicationDetailModalProps {
   applicationId: number;
   onCancel: () => void;
@@ -96,7 +98,9 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
               <h2 className="font-bold text-lg">{data?.programInfo.title}</h2>
             </div>
 
-            <div className="text-gray-500">{data?.programInfo.createdAt}</div>
+            <div className="text-gray-500">
+              {formatDateTime(data?.programInfo.createdAt)}
+            </div>
           </div>
         </section>
 
@@ -109,7 +113,9 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">핸드폰 번호</td>
-              <td className="px-4">{data?.applierInfo.phone}</td>
+              <td className="px-4">
+                {formatHyphenPhone(data?.applierInfo.phone)}
+              </td>
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">성별</td>
@@ -163,7 +169,7 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">신청 일시</td>
-              <td className="px-4">{data?.appliedAt}</td>
+              <td className="px-4">{formatDateTime(data?.appliedAt)}</td>
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">
@@ -189,7 +195,9 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
             {data?.status === '취소' && (
               <tr>
                 <td className="text-bold text-gray-500 py-2">취소 일시</td>
-                <td className="px-4 text-red">{data?.canceledAt}</td>
+                <td className="px-4 text-red">
+                  {formatDateTime(data?.canceledAt)}
+                </td>
               </tr>
             )}
             {data?.status === '취소' && (
