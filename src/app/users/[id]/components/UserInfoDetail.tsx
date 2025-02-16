@@ -11,6 +11,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState, useEffect, ChangeEvent } from 'react';
 import { callGetUser, callPutUserInfo } from '@/_networks/api/user';
 
+import { useUser } from '@/_hooks/useUser';
+
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -28,36 +30,33 @@ interface UserInfoDetailProps {
 export const UserInfoDetail = (props: UserInfoDetailProps) => {
   const { userId } = props;
   const [searchAddressPopup, setSearchAddressPopup] = useState(false);
-  const { data, isLoading } = useQuery<UserResponse>({
-    queryKey: [userId],
-    queryFn: () => callGetUser(userId),
-  });
+  const { userInfo, isLoading } = useUser(userId);
 
   const [updateUserInfoRequestBody, setUpdateUserInfoRequestBody] =
     useState<CallPutUserInfoRequestBody>({
-      newAddress: data?.address ?? '',
-      newAddressDetail: data?.addressDetail ?? '',
-      newBirthday: data?.birthday ?? '',
-      newGender: data?.gender ?? Gender.남,
-      newName: data?.name ?? '',
+      newAddress: userInfo?.address ?? '',
+      newAddressDetail: userInfo?.addressDetail ?? '',
+      newBirthday: userInfo?.birthday ?? '',
+      newGender: userInfo?.gender ?? Gender.남,
+      newName: userInfo?.name ?? '',
       newPassword: '',
-      newPhone: data?.phone ?? '',
+      newPhone: userInfo?.phone ?? '',
     });
 
   // 오토필
   useEffect(() => {
-    if (data) {
+    if (userInfo) {
       setUpdateUserInfoRequestBody({
-        newAddress: data.address,
-        newAddressDetail: data.addressDetail,
-        newBirthday: data.birthday,
-        newGender: data.gender,
-        newName: data.name,
+        newAddress: userInfo.address,
+        newAddressDetail: userInfo.addressDetail,
+        newBirthday: userInfo.birthday,
+        newGender: userInfo.gender,
+        newName: userInfo.name,
         newPassword: '',
-        newPhone: data.phone,
+        newPhone: userInfo.phone,
       });
     }
-  }, [data]);
+  }, [userInfo]);
 
   const mutation = useMutation({
     mutationFn: (requestBody: CallPutUserInfoRequestBody) =>
@@ -150,7 +149,7 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
           <tr>
             <CellLabel label="아이디" />
             <Cell>
-              <Input value={data?.email} disabled />
+              <Input value={userInfo?.email} disabled />
             </Cell>
           </tr>
 
@@ -195,13 +194,13 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
               <Radio
                 disabled
                 name="role"
-                checked={data?.role === UserRole.USER}
+                checked={userInfo?.role === UserRole.USER}
                 label="사용자"
               />
               <Radio
                 disabled
                 name="role"
-                checked={data?.role === UserRole.ADMIN}
+                checked={userInfo?.role === UserRole.ADMIN}
                 label="관리자"
               />
               <Radio disabled name="role" label="시스템관리자" />
