@@ -1,8 +1,12 @@
-'use client'
-import { Title } from '@/_components/common/Title'
-import { UserInfoDetail } from './components/UserInfoDetail'
-import { UserProgramApplicationDetail } from './components/UserProgramApplicationDetail'
-import { useParams } from 'next/navigation'
+'use client';
+import { Title } from '@/_components/common/Title';
+import { UserInfoDetail } from './components/UserInfoDetail';
+import { UserProgramApplicationDetail } from './components/UserProgramApplicationDetail';
+import { useParams } from 'next/navigation';
+import { useUser } from '@/_hooks/useUser';
+import { UserRole } from '@/_types';
+import { UserProgramDetail } from './components/UserProgramDetail';
+import { LoadingSpinner } from '@/_components/common/LoadingSpinner';
 
 /**
  * 사용자 상세 페이지
@@ -12,8 +16,10 @@ import { useParams } from 'next/navigation'
  * 관리자: [UserProgramDetail] 프로그램 현황
  */
 export default function UserDetailPage() {
-  const params = useParams()
-  const userId = Number(params.id)
+  const params = useParams();
+  const userId = Number(params.id);
+  const { userInfo, isLoading } = useUser(userId);
+  if (isLoading) return <LoadingSpinner />;
   return (
     <section className="flex-1 flex flex-col items-center justify-center w-full px-5 py-12">
       <Title title="사용자 관리" />
@@ -22,9 +28,13 @@ export default function UserDetailPage() {
           <UserInfoDetail userId={userId} />
         </div>
         <div className="flex-1 p-4 h-full">
-          <UserProgramApplicationDetail userId={userId} />
+          {userInfo?.role === UserRole.ADMIN ? (
+            <UserProgramDetail userId={userId} />
+          ) : (
+            <UserProgramApplicationDetail userId={userId} />
+          )}
         </div>
       </section>
     </section>
-  )
+  );
 }

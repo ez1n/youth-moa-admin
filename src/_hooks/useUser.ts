@@ -4,7 +4,7 @@ import { callGetUser } from '@/_networks/api/user';
 
 export const useUser = (userId: number) => {
   const { data, isLoading } = useQuery<UserResponse>({
-    queryKey: [userId],
+    queryKey: [{ userId: userId }],
     queryFn: () => callGetUser(userId),
   });
 
