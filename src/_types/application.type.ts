@@ -1,5 +1,5 @@
-import { ProgramInfoResponse } from './program.type'
-import { UserResponse } from './user.type'
+import { ProgramInfoResponse } from './program.type';
+import { UserResponse } from './user.type';
 
 export enum ApplicationStatus {
   대기 = '대기',
@@ -9,16 +9,16 @@ export enum ApplicationStatus {
 }
 
 export interface CallGetAllApplicationsResponse {
-  applications: ApplicationResponse[]
+  applications: ApplicationResponse[];
 }
 
 export interface ApplicationResponse {
-  applierInfo: UserResponse
-  programInfo: ProgramInfoResponse
-  status: ApplicationStatus
-  appliedAt: string
-  approvedAt: string | null
-  canceledAt: string | null
-  cancelReason: string | null
-  adminComment: string | null
+  applierInfo: UserResponse;
+  programInfo: ProgramInfoResponse;
+  status: ApplicationStatus;
+  appliedAt: string;
+  approvedAt: string | null;
+  canceledAt: string | null;
+  cancelReason: string | null;
+  adminComment: string | null;
 }
