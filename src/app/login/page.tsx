@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/_hooks/useAuth";
@@ -12,7 +12,7 @@ import { Alert } from "@/_components/common/Alert";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, checkLogin } = useAuth();
 
   const [isShowAlert, setIsShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,6 +20,12 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (checkLogin()) {
+      router.replace("/");
+    }
+  }, []);
 
   const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
