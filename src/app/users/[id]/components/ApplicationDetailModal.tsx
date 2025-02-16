@@ -1,6 +1,6 @@
 import { Button } from '@/_components/common/Button';
 import { TextArea } from '@/_components/common/TextArea';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { tw } from '../../../../../tailwindmerge.config';
@@ -24,6 +24,13 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
   const [status, setStatus] = useState('상태');
   const [adminComment, setAdminComment] = useState('');
 
+  useEffect(() => {
+    if (data) {
+      setStatus(data.status);
+      setAdminComment(data.adminComment ?? '');
+    }
+  }, [data]);
+
   const hasAdditionalInfo = () => {
     if (!data) return false;
     return data.answers.length > 0 || data.attachmentFileIds.length > 0;
@@ -32,20 +39,28 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
   const Dropdown = () => {
     return (
       <div className="relative inline-block">
-        <input type="checkbox" id="dropdown-toggle" className="peer hidden" />
+        <input
+          disabled={status === '취소'}
+          type="checkbox"
+          id="dropdown-toggle"
+          className="peer hidden"
+        />
         <label
           htmlFor="dropdown-toggle"
           className={tw(
             'border bg-blue-500 px-4 py-2 rounded cursor-pointer block flex',
             status === '승인' && 'text-green',
             status === '반려' && 'text-red',
-            status === '상태' && 'text-gray-500'
+            status === '상태' && 'text-gray-500',
+            status === '취소' && 'text-black bg-gray-300'
           )}
         >
           {status}
-          <div className="px-2 text-black">
-            <IcoArrow direction="down" className="ml-2" />
-          </div>
+          {status != '취소' && (
+            <div className="px-2 text-black">
+              <IcoArrow direction="down" className="ml-2" />
+            </div>
+          )}
         </label>
 
         <div className="z-10 absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded shadow-md opacity-0 peer-checked:opacity-100 peer-checked:visible invisible transition-opacity">
