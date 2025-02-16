@@ -1,16 +1,20 @@
-import { Button } from './Button'
-import { Portal } from './Portal'
+import { Button } from './Button';
+import { Portal } from './Portal';
 
-import { IcoErrorCircle, IcoSuccessCircle } from '../icons'
+import { IcoErrorCircle, IcoSuccessCircle } from '../icons';
 
 interface PropsType {
-  message: string
-  onClick: () => void
-  type?: 'success' | 'error'
+  message: string;
+  onClick: () => void;
+  type?: 'success' | 'error';
 }
 
 export function Alert(props: PropsType) {
-  const { type = 'error', message, onClick } = props
+  const { type = 'error', message, onClick } = props;
+  const alertIcon = {
+    success: <IcoSuccessCircle />,
+    error: <IcoErrorCircle />,
+  };
 
   return (
     // TODO: 애니메이션 추가
@@ -22,12 +26,7 @@ export function Alert(props: PropsType) {
           className="relative overflow-hidden bg-white sm:w-fit h-fit rounded-xl md:min-w-96 flex flex-col items-center justify-center w-full px-6 py-5 max-w-[373px]"
           onClick={(e) => e.stopPropagation()}
         >
-          {
-            {
-              success: <IcoSuccessCircle />,
-              error: <IcoErrorCircle />,
-            }[type]
-          }
+          {alertIcon[type]}
 
           <p className="mx-6 mt-4 mb-6 text-center md:mx-12">{message}</p>
 
@@ -35,5 +34,5 @@ export function Alert(props: PropsType) {
         </section>
       </div>
     </Portal>
-  )
+  );
 }

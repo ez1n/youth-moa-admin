@@ -32,7 +32,6 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
     queryKey: [userId],
     queryFn: () => callGetUser(userId),
   });
-  const [address, setAddress] = useState(data?.address);
 
   const [updateUserInfoRequestBody, setUpdateUserInfoRequestBody] =
     useState<CallPutUpdateUserInfoRequestBody>({
@@ -48,7 +47,6 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
   // 오토필
   useEffect(() => {
     if (data) {
-      setAddress(data.address);
       setUpdateUserInfoRequestBody({
         newAddress: data.address,
         newAddressDetail: data.addressDetail,
@@ -107,11 +105,6 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
       return;
     }
     try {
-      // SearchAddress에서 받아온 주소를 reqeustBody에 저장
-      setUpdateUserInfoRequestBody({
-        ...updateUserInfoRequestBody,
-        newAddress: address ?? '',
-      });
       await mutation.mutateAsync(updateUserInfoRequestBody);
       setAlertMessage('정상적으로 수정되었습니다');
       setIsSuccessAlert(true);
@@ -233,7 +226,7 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
               <Input
                 onChange={onChange}
                 name="newAddress"
-                value={address}
+                value={updateUserInfoRequestBody.newAddress}
                 disabled
               />{' '}
             </Cell>
@@ -298,7 +291,12 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
       </table>
       {searchAddressPopup && (
         <SearchAddress
-          setAddress={setAddress}
+          setAddress={(address: string) =>
+            setUpdateUserInfoRequestBody((prev) => ({
+              ...prev,
+              newAddress: address,
+            }))
+          }
           handleComplete={handleSearchAddressPopup}
         />
       )}
