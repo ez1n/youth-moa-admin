@@ -1,19 +1,145 @@
-import { Input } from '@/_components/common/Input'
-import { Radio } from '@/_components/common/Radio'
-import { Button } from '@/_components/common/Button'
-import { IcoSearch } from '@/_components/icons'
-import { DatePicker } from '@/_components/common/DatePicker'
-import { Cell, CellLabel } from '../components/Cell'
-import { SearchAddress } from '@/_components/common/SearchAddress'
+import { Input } from '@/_components/common/Input';
+import { Radio } from '@/_components/common/Radio';
+import { Button } from '@/_components/common/Button';
+import { IcoSearch } from '@/_components/icons';
+import { DatePicker } from '@/_components/common/DatePicker';
+import { Alert } from '@/_components/common/Alert';
+import { Cell, CellLabel } from '../components/Cell';
+import { SearchAddress } from '@/_components/common/SearchAddress';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { useState } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react';
+import { callGetUser, callPutUserInfo } from '@/_networks/api/user';
 
-export const UserInfoDetail = () => {
-  const [searchAddressPopup, setSearchAddressPopup] = useState(false)
-  const [address, setAddress] = useState('')
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
+import {
+  UserResponse,
+  Gender,
+  UserRole,
+  CallPutUpdateUserInfoRequestBody,
+} from '@/_types';
+
+interface UserInfoDetailProps {
+  userId: number;
+}
+
+export const UserInfoDetail = (props: UserInfoDetailProps) => {
+  const { userId } = props;
+  const [searchAddressPopup, setSearchAddressPopup] = useState(false);
+  const { data, isLoading } = useQuery<UserResponse>({
+    queryKey: [userId],
+    queryFn: () => callGetUser(userId),
+  });
+
+  const [updateUserInfoRequestBody, setUpdateUserInfoRequestBody] =
+    useState<CallPutUpdateUserInfoRequestBody>({
+      newAddress: data?.address ?? '',
+      newAddressDetail: data?.addressDetail ?? '',
+      newBirthday: data?.birthday ?? '',
+      newGender: data?.gender ?? Gender.남,
+      newName: data?.name ?? '',
+      newPassword: '',
+      newPhone: data?.phone ?? '',
+    });
+
+  // 오토필
+  useEffect(() => {
+    if (data) {
+      setUpdateUserInfoRequestBody({
+        newAddress: data.address,
+        newAddressDetail: data.addressDetail,
+        newBirthday: data.birthday,
+        newGender: data.gender,
+        newName: data.name,
+        newPassword: '',
+        newPhone: data.phone,
+      });
+    }
+  }, [data]);
+
+  const mutation = useMutation({
+    mutationFn: (requestBody: CallPutUpdateUserInfoRequestBody) =>
+      callPutUserInfo(userId, requestBody),
+  });
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUpdateUserInfoRequestBody((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const [isShowAlert, setIsShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [isSuccessAlert, setIsSuccessAlert] = useState(false);
+
+  const validate = () => {
+    let validateErrorMessage = '';
+    if (!updateUserInfoRequestBody.newPassword) {
+      validateErrorMessage = '비밀번호를 입력해주세요.';
+    }
+
+    if (!updateUserInfoRequestBody.newName) {
+      validateErrorMessage = '이름을 입력해주세요.';
+    }
+
+    if (!updateUserInfoRequestBody.newPhone) {
+      validateErrorMessage = '핸드폰 번호를 입력해주세요.';
+    }
+
+    if (!updateUserInfoRequestBody.newAddressDetail) {
+      validateErrorMessage = '상세주소를 입력해주세요.';
+    }
+
+    if (validateErrorMessage.length > 1) {
+      setAlertMessage(validateErrorMessage);
+      setIsShowAlert(true);
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const updateUserInfo = async () => {
+    if (validate() === false) {
+      return;
+    }
+    try {
+      await mutation.mutateAsync(updateUserInfoRequestBody);
+      setAlertMessage('정상적으로 수정되었습니다');
+      setIsSuccessAlert(true);
+    } catch (e: any) {
+      setAlertMessage(e.response.data.message);
+      setIsShowAlert(true);
+    }
+  };
 
   const handleSearchAddressPopup = () => {
-    setSearchAddressPopup(!searchAddressPopup)
+    setSearchAddressPopup(!searchAddressPopup);
+  };
+
+  if (isLoading) {
+    return (
+      <section className="border w-full h-full rounded-xl shadow-md p-6">
+        <h2 className="text-xl font-bold mb-4">
+          <Skeleton width={150} />
+        </h2>
+        <table className="w-full border-separate border-spacing-y-4">
+          <tbody>
+            {[...Array(6)].map((_, index) => (
+              <tr key={index}>
+                <Cell>
+                  <Skeleton width={80} />
+                </Cell>
+                <Cell>
+                  <Skeleton height={40} />
+                </Cell>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    );
   }
 
   return (
@@ -24,19 +150,25 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="아이디" />
             <Cell>
-              <Input disabled />
+              <Input value={data?.email} disabled />
             </Cell>
           </tr>
 
           <tr>
-            <CellLabel label="비밀번호" />
+            <CellLabel label="새 비밀번호" />
             <Cell>
-              <Input type="password" placeholder="비밀번호를 입력해주세요" />
+              <Input
+                onChange={onChange}
+                value={updateUserInfoRequestBody.newPassword}
+                name="newPassword"
+                type="password"
+                placeholder="비밀번호를 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
-            <CellLabel label="비밀번호 확인" />
+            <CellLabel label="새 비밀번호 확인" />
             <Cell>
               <Input
                 type="password"
@@ -48,15 +180,30 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="이름" />
             <Cell>
-              <Input placeholder="이름을 입력해주세요" />
+              <Input
+                value={updateUserInfoRequestBody.newName}
+                name="newName"
+                onChange={onChange}
+                placeholder="이름을 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="권한" />
             <Cell className="flex">
-              <Radio disabled name="role" label="사용자" />
-              <Radio disabled name="role" label="관리자" />
+              <Radio
+                disabled
+                name="role"
+                checked={data?.role === UserRole.USER}
+                label="사용자"
+              />
+              <Radio
+                disabled
+                name="role"
+                checked={data?.role === UserRole.ADMIN}
+                label="관리자"
+              />
               <Radio disabled name="role" label="시스템관리자" />
             </Cell>
           </tr>
@@ -64,14 +211,24 @@ export const UserInfoDetail = () => {
           <tr>
             <CellLabel label="핸드폰 번호" />
             <Cell>
-              <Input placeholder="핸드폰 번호를 입력해주세요" />
+              <Input
+                onChange={onChange}
+                name="newPhone"
+                value={updateUserInfoRequestBody.newPhone}
+                placeholder="핸드폰 번호를 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="주소" />
             <Cell>
-              <Input disabled value={address} />{' '}
+              <Input
+                onChange={onChange}
+                name="newAddress"
+                value={updateUserInfoRequestBody.newAddress}
+                disabled
+              />{' '}
             </Cell>
             <Cell>
               <Button
@@ -86,39 +243,73 @@ export const UserInfoDetail = () => {
           <tr>
             <Cell> </Cell>
             <Cell>
-              <Input placeholder="상세주소를 입력해주세요" />
+              <Input
+                onChange={onChange}
+                name="newAddressDetail"
+                value={updateUserInfoRequestBody.newAddressDetail}
+                placeholder="상세주소를 입력해주세요"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="성별" />
             <Cell className="flex justify-between">
-              <Radio name="gender" label="남" />
-              <Radio name="gender" label="여" />
+              <Radio
+                onChange={onChange}
+                name="newGender"
+                value={updateUserInfoRequestBody.newGender}
+                label="남"
+              />
+              <Radio
+                onChange={onChange}
+                name="newGender"
+                value={updateUserInfoRequestBody.newGender}
+                label="여"
+              />
             </Cell>
           </tr>
 
           <tr>
             <CellLabel label="생년월일" />
             <Cell>
-              <DatePicker />
+              <DatePicker
+                onChange={onChange}
+                name="newBirthday"
+                value={updateUserInfoRequestBody.newBirthday}
+              />
             </Cell>
           </tr>
 
           <tr>
             <Cell> </Cell>
             <Cell className="px-12">
-              <Button onClick={console.log}>저장</Button>
+              <Button onClick={updateUserInfo}>저장</Button>
             </Cell>
           </tr>
         </tbody>
       </table>
       {searchAddressPopup && (
         <SearchAddress
-          setAddress={setAddress}
+          setAddress={(address: string) =>
+            setUpdateUserInfoRequestBody((prev) => ({
+              ...prev,
+              newAddress: address,
+            }))
+          }
           handleComplete={handleSearchAddressPopup}
         />
       )}
+      {isShowAlert && (
+        <Alert message={alertMessage} onClick={() => setIsShowAlert(false)} />
+      )}
+      {isSuccessAlert && (
+        <Alert
+          type="success"
+          message={alertMessage}
+          onClick={() => setIsSuccessAlert(false)}
+        />
+      )}
     </section>
-  )
-}
+  );
+};
