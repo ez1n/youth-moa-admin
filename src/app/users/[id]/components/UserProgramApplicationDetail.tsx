@@ -1,31 +1,31 @@
-import { useState } from 'react'
-import { RadioButton } from '@/_components/common/RadioButton'
-import { ProgramApplicationCard } from './ProgramApplicationCard'
-import { useQuery } from '@tanstack/react-query'
-import { callGetAllApplications } from '@/_networks/api/application'
-import { ApplicationStatus } from '@/_types'
-import { LoadingSpinner } from '@/_components/common/LoadingSpinner'
+import { useState } from 'react';
+import { RadioButton } from '@/_components/common/RadioButton';
+import { ProgramApplicationCard } from './ProgramApplicationCard';
+import { useQuery } from '@tanstack/react-query';
+import { callGetAllApplications } from '@/_networks/api/application';
+import { ApplicationStatus } from '@/_types';
+import { LoadingSpinner } from '@/_components/common/LoadingSpinner';
 
 interface UserProgramApplicationDetailProps {
-  userId: number
+  userId: number;
 }
 
 export const UserProgramApplicationDetail = (
   props: UserProgramApplicationDetailProps
 ) => {
-  const { userId } = props
+  const { userId } = props;
   const statusMap: Record<string, ApplicationStatus | null> = {
     전체: null,
     대기: ApplicationStatus.대기,
     승인: ApplicationStatus.승인,
     반려: ApplicationStatus.반려,
     취소: ApplicationStatus.취소,
-  }
-  const [filterStatus, setFilterStatus] = useState('전체')
+  };
+  const [filterStatus, setFilterStatus] = useState('전체');
   const { data, isLoading, isError } = useQuery({
     queryKey: [userId, filterStatus],
     queryFn: () => callGetAllApplications(userId, statusMap[filterStatus]),
-  })
+  });
 
   const ApplicationList = () => {
     return (
@@ -63,8 +63,8 @@ export const UserProgramApplicationDetail = (
           </div>
         </section>
       </>
-    )
-  }
+    );
+  };
 
   const ApplicationListEmpty = () => {
     return (
@@ -83,8 +83,8 @@ export const UserProgramApplicationDetail = (
           <p className="text-center">신청된 프로그램이 없습니다.</p>
         </div>
       </section>
-    )
-  }
+    );
+  };
 
   return (
     <section>
@@ -94,5 +94,5 @@ export const UserProgramApplicationDetail = (
         <ApplicationList />
       )}
     </section>
-  )
-}
+  );
+};
