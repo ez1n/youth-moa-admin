@@ -1,38 +1,38 @@
-import { Input } from '@/_components/common/Input'
-import { Radio } from '@/_components/common/Radio'
-import { Button } from '@/_components/common/Button'
-import { IcoSearch } from '@/_components/icons'
-import { DatePicker } from '@/_components/common/DatePicker'
-import { Alert } from '@/_components/common/Alert'
-import { Cell, CellLabel } from '../components/Cell'
-import { SearchAddress } from '@/_components/common/SearchAddress'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { Input } from '@/_components/common/Input';
+import { Radio } from '@/_components/common/Radio';
+import { Button } from '@/_components/common/Button';
+import { IcoSearch } from '@/_components/icons';
+import { DatePicker } from '@/_components/common/DatePicker';
+import { Alert } from '@/_components/common/Alert';
+import { Cell, CellLabel } from '../components/Cell';
+import { SearchAddress } from '@/_components/common/SearchAddress';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { useState, useEffect, ChangeEvent } from 'react'
-import { callGetUser, callPutUserInfo } from '@/_networks/api/user'
+import { useState, useEffect, ChangeEvent } from 'react';
+import { callGetUser, callPutUserInfo } from '@/_networks/api/user';
 
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import {
   UserResponse,
   Gender,
   UserRole,
   CallPutUpdateUserInfoRequestBody,
-} from '@/_types'
+} from '@/_types';
 
 interface UserInfoDetailProps {
-  userId: number
+  userId: number;
 }
 
 export const UserInfoDetail = (props: UserInfoDetailProps) => {
-  const { userId } = props
-  const [searchAddressPopup, setSearchAddressPopup] = useState(false)
-  const { data, isLoading, isError } = useQuery<UserResponse>({
+  const { userId } = props;
+  const [searchAddressPopup, setSearchAddressPopup] = useState(false);
+  const { data, isLoading } = useQuery<UserResponse>({
     queryKey: [userId],
     queryFn: () => callGetUser(userId),
-  })
-  const [address, setAddress] = useState(data?.address)
+  });
+  const [address, setAddress] = useState(data?.address);
 
   const [updateUserInfoRequestBody, setUpdateUserInfoRequestBody] =
     useState<CallPutUpdateUserInfoRequestBody>({
@@ -43,12 +43,12 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
       newName: data?.name ?? '',
       newPassword: '',
       newPhone: data?.phone ?? '',
-    })
+    });
 
   // 오토필
   useEffect(() => {
     if (data) {
-      setAddress(data.address)
+      setAddress(data.address);
       setUpdateUserInfoRequestBody({
         newAddress: data.address,
         newAddressDetail: data.addressDetail,
@@ -57,77 +57,73 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
         newName: data.name,
         newPassword: '',
         newPhone: data.phone,
-      })
+      });
     }
-  }, [data])
+  }, [data]);
 
-  const mutation = useMutation<
-    ResponseType,
-    Error,
-    CallPutUpdateUserInfoRequestBody
-  >({
-    mutationFn: (requestBody) => callPutUserInfo(userId, requestBody),
-  })
+  const mutation = useMutation({
+    mutationFn: (requestBody: CallPutUpdateUserInfoRequestBody) =>
+      callPutUserInfo(userId, requestBody),
+  });
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setUpdateUserInfoRequestBody((prev) => ({ ...prev, [name]: value }))
-    console.log(updateUserInfoRequestBody)
-  }
+    const { name, value } = e.target;
+    setUpdateUserInfoRequestBody((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const [isShowAlert, setIsShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
-  const [isSuccessAlert, setIsSuccessAlert] = useState(false)
+  const [isShowAlert, setIsShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [isSuccessAlert, setIsSuccessAlert] = useState(false);
 
   const validate = () => {
-    let validateErrorMessage = ''
+    let validateErrorMessage = '';
     if (!updateUserInfoRequestBody.newPassword) {
-      validateErrorMessage = '비밀번호를 입력해주세요.'
+      validateErrorMessage = '비밀번호를 입력해주세요.';
     }
 
     if (!updateUserInfoRequestBody.newName) {
-      validateErrorMessage = '이름을 입력해주세요.'
+      validateErrorMessage = '이름을 입력해주세요.';
     }
 
     if (!updateUserInfoRequestBody.newPhone) {
-      validateErrorMessage = '핸드폰 번호를 입력해주세요.'
+      validateErrorMessage = '핸드폰 번호를 입력해주세요.';
     }
 
     if (!updateUserInfoRequestBody.newAddressDetail) {
-      validateErrorMessage = '상세주소를 입력해주세요.'
+      validateErrorMessage = '상세주소를 입력해주세요.';
     }
 
     if (validateErrorMessage.length > 1) {
-      setAlertMessage(validateErrorMessage)
-      setIsShowAlert(true)
-      return false
+      setAlertMessage(validateErrorMessage);
+      setIsShowAlert(true);
+      return false;
     } else {
-      return true
+      return true;
     }
-  }
+  };
 
   const updateUserInfo = async () => {
     if (validate() === false) {
-      return
+      return;
     }
     try {
       // SearchAddress에서 받아온 주소를 reqeustBody에 저장
       setUpdateUserInfoRequestBody({
         ...updateUserInfoRequestBody,
         newAddress: address ?? '',
-      })
-      await mutation.mutateAsync(updateUserInfoRequestBody)
-      setAlertMessage('정상적으로 수정되었습니다')
-      setIsSuccessAlert(true)
+      });
+      await mutation.mutateAsync(updateUserInfoRequestBody);
+      setAlertMessage('정상적으로 수정되었습니다');
+      setIsSuccessAlert(true);
     } catch (e: any) {
-      setAlertMessage(e.response.data.message)
-      setIsShowAlert(true)
+      setAlertMessage(e.response.data.message);
+      setIsShowAlert(true);
     }
-  }
+  };
 
   const handleSearchAddressPopup = () => {
-    setSearchAddressPopup(!searchAddressPopup)
-  }
+    setSearchAddressPopup(!searchAddressPopup);
+  };
 
   if (isLoading) {
     return (
@@ -150,7 +146,7 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
           </tbody>
         </table>
       </section>
-    )
+    );
   }
 
   return (
@@ -317,5 +313,5 @@ export const UserInfoDetail = (props: UserInfoDetailProps) => {
         />
       )}
     </section>
-  )
-}
+  );
+};
