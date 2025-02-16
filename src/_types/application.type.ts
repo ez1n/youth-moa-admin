@@ -17,9 +17,22 @@ export interface ApplicationResponse {
   applierInfo: UserResponse;
   programInfo: ProgramInfoResponse;
   status: ApplicationStatus;
+  answers: QuestionAnswerResponse[];
+  attachmentFileIds: number[];
   appliedAt: string;
-  approvedAt: string | null;
-  canceledAt: string | null;
+  approvedAt: string | null; // date
+  rejectedAt: string | null; // date
+  canceledAt: string | null; // date
   cancelReason: string | null;
   adminComment: string | null;
+}
+
+export interface QuestionAnswerResponse {
+  question: ProgramQuestionResponse;
+  answer: string;
+}
+
+export interface ProgramQuestionResponse {
+  questionId: number;
+  question: string;
 }

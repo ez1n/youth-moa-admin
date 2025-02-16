@@ -1,11 +1,13 @@
 import { Button } from '@/_components/common/Button';
-import { Input } from '@/_components/common/Input';
 import { TextArea } from '@/_components/common/TextArea';
 import { useState } from 'react';
-import { Portal } from '@/_components/common/Portal';
+import { useQuery } from '@tanstack/react-query';
 
 import { tw } from '../../../../../tailwindmerge.config';
 import { IcoArrow } from '@/_components/icons';
+
+import { callGetApplication } from '@/_networks/api/application';
+import { LoadingSpinner } from '@/_components/common/LoadingSpinner';
 
 interface ApplicationDetailModalProps {
   applicationId: number;
@@ -14,9 +16,18 @@ interface ApplicationDetailModalProps {
 
 export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
   const { applicationId, onCancel } = props;
+  const { data, isLoading } = useQuery({
+    queryKey: [{ applicationId: applicationId }],
+    queryFn: () => callGetApplication(applicationId),
+  });
 
   const [status, setStatus] = useState('상태');
   const [adminComment, setAdminComment] = useState('');
+
+  const hasAdditionalInfo = () => {
+    if (!data) return false;
+    return data.answers.length > 0 || data.attachmentFileIds.length > 0;
+  };
 
   const Dropdown = () => {
     return (
@@ -56,12 +67,9 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
   };
 
   return (
-    <section
-      // portalId="application-detail-modal"
-      className="w-100 h-100 flex flex-col fixed inset-0 flex items-center justify-center bg-black z-12 bg-opacity-30"
-      // className="w-full h-full border flex flex-col justify-start p-10 m-10 rounded-xl shadow"
-    >
+    <section className="w-100 h-100 flex flex-col fixed inset-0 flex items-center justify-center bg-black z-12 bg-opacity-30">
       <div className="w-500 h-500 bg-white p-5 rounded-lg shadow-lg">
+        {isLoading && <LoadingSpinner />}
         <section className="p-4 font-bold text-lg">프로그램 신청 상세</section>
 
         <section className="flex my-3 px-3">
@@ -70,10 +78,10 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
           </div>
           <div>
             <div className="flex my-2">
-              <h2 className="font-bold text-lg">프로그램 A</h2>
+              <h2 className="font-bold text-lg">{data?.programInfo.title}</h2>
             </div>
 
-            <div className="text-gray-500">2024-07-08 월 15:00</div>
+            <div className="text-gray-500">{data?.programInfo.createdAt}</div>
           </div>
         </section>
 
@@ -82,44 +90,52 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
           <table>
             <tr>
               <td className="text-bold text-gray-500 py-2">이름</td>
-              <td className="px-4">박시현</td>
+              <td className="px-4">{data?.applierInfo.name}</td>
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">핸드폰 번호</td>
-              <td className="px-4">010-1234-5678</td>
+              <td className="px-4">{data?.applierInfo.phone}</td>
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">성별</td>
-              <td className="px-4">여</td>
+              <td className="px-4">{data?.applierInfo.gender}</td>
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">생년월일</td>
-              <td className="px-4">1995-07-08</td>
+              <td className="px-4">{data?.applierInfo.birthday}</td>
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">주소</td>
-              <td className="px-4">경기도 용인시 기훙구 용구대로 2311</td>
+              <td className="px-4">
+                {data?.applierInfo.address} {data?.applierInfo.addressDetail}
+              </td>
             </tr>
           </table>
         </section>
 
-        <section className="px-3 py-3">
-          <div className="py-3 font-bold text-lf">추가 정보</div>
-          <div>
-            <div className="text-bold text-gray-500 py-2">주관식 질문</div>
-            <div>입력한 답변 내용이 노출됩니다.</div>
-          </div>
+        {hasAdditionalInfo() && (
+          <section className="px-3 py-3">
+            <div className="py-3 font-bold text-lf">추가 정보</div>
+            {data?.answers.map((questionAnswer) => (
+              <div>
+                <div className="text-bold text-gray-500 py-2">
+                  {questionAnswer.question.question}
+                </div>
+                <div>{questionAnswer.answer}</div>
+              </div>
+            ))}
 
-          <div className="text-bold text-gray-500 py-2">첨부 파일</div>
-          <div className="flex">
-            <button className="border-blue font-bold text-blue bg-indigo-50 border rounded-3xl text-[11px] mx-3 p-1">
-              프로그램 A 추가 서류.pdf
-            </button>
-            <button className="border-blue font-bold text-blue bg-indigo-50 border rounded-3xl text-[11px] mx-3 p-1">
-              프로그램 A 추가 서류.pdf
-            </button>
-          </div>
-        </section>
+            {data?.attachmentFileIds && (
+              <div className="text-bold text-gray-500 py-2">첨부 파일</div>
+            )}
+
+            {data?.attachmentFileIds.map((attachmentFileId) => (
+              <button className="border-blue font-bold text-blue bg-indigo-50 border rounded-3xl text-[11px] mx-3 p-1">
+                {attachmentFileId} 서류
+              </button>
+            ))}
+          </section>
+        )}
 
         <section className="px-3 py-3">
           <div className="py-3 font-bold text-lf">신청 이력</div>
@@ -132,11 +148,17 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">신청 일시</td>
-              <td className="px-4">2024-07-05 17:11:31</td>
+              <td className="px-4">{data?.appliedAt}</td>
             </tr>
             <tr>
-              <td className="text-bold text-gray-500 py-2">승인 일시</td>
-              <td className="px-4">2024-07-05 17:11:31</td>
+              <td className="text-bold text-gray-500 py-2">
+                {data?.status === '승인' && '승인 일시'}
+                {data?.status === '반려' && '반려 일시'}
+              </td>
+              <td className="px-4">
+                {data?.status === '승인' && data?.approvedAt}
+                {data?.status === '반려' && data?.rejectedAt}
+              </td>
             </tr>
             <tr>
               <td className="text-bold text-gray-500 py-2">담당자 의견</td>
@@ -149,6 +171,18 @@ export const ApplicationDetailModal = (props: ApplicationDetailModalProps) => {
                 />
               </td>
             </tr>
+            {data?.status === '취소' && (
+              <tr>
+                <td className="text-bold text-gray-500 py-2">취소 일시</td>
+                <td className="px-4 text-red">{data?.canceledAt}</td>
+              </tr>
+            )}
+            {data?.status === '취소' && (
+              <tr>
+                <td className="text-bold text-gray-500 py-2">취소 사유</td>
+                <td className="px-4 text-red">{data?.cancelReason}</td>
+              </tr>
+            )}
           </table>
         </section>
 
