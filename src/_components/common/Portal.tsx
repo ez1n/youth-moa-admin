@@ -32,6 +32,14 @@ export const Portal = (props: PropsWithChildren<Propstype>) => {
     };
   }, [portalId]);
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   if (!portalRoot) {
     return null;
   }
