@@ -10,6 +10,7 @@ import {
 } from "@/_types";
 import { useState } from "react";
 import { FilterDetailModal } from "./FilterDetailModal";
+import { FILTER_RENDER_ITEM_COUNT } from "@/_constants";
 
 interface PropsType {
   regions: ProgramFilterDetailType[];
@@ -56,7 +57,7 @@ export const Filter = (props: PropsType) => {
 
         <SeperateOpenableAccordion title="지역" defaultOpen={true}>
           <ul className="flex flex-col items-center justify-center gap-1">
-            {regions.slice(0, 15).map((region) => (
+            {regions.slice(0, FILTER_RENDER_ITEM_COUNT).map((region) => (
               <li className="w-full" key={region.id}>
                 <FilterItem
                   name={region.name}
@@ -67,7 +68,7 @@ export const Filter = (props: PropsType) => {
                 />
               </li>
             ))}
-            {regions.length > 15 && (
+            {regions.length > FILTER_RENDER_ITEM_COUNT && (
               <div className="w-full flex justify-end items-center">
                 <button
                   className="text-gray-001 font-semibold flex items-center gap-1"
@@ -90,7 +91,7 @@ export const Filter = (props: PropsType) => {
 
         <SeperateOpenableAccordion title="청년센터" defaultOpen={true}>
           <ul className="flex flex-col items-center justify-center gap-1">
-            {centers.slice(0, 15).map((center) => (
+            {centers.slice(0, FILTER_RENDER_ITEM_COUNT).map((center) => (
               <li className="w-full" key={center.id}>
                 <FilterItem
                   name={center.name}
@@ -101,7 +102,7 @@ export const Filter = (props: PropsType) => {
                 />
               </li>
             ))}
-            {centers.length > 15 && (
+            {centers.length > FILTER_RENDER_ITEM_COUNT && (
               <div className="w-full flex justify-end items-center">
                 <button
                   className="text-gray-001 font-semibold flex items-center gap-1"
