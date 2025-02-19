@@ -1,29 +1,30 @@
-import { Pagination } from '@/_components/common/Pagination'
-import { formatHyphenPhone, formatDate } from '@/_utils/format.util'
+import { Pagination } from '@/_components/common/Pagination';
+import { formatHyphenPhone, formatDate } from '@/_utils/format.util';
 
-import { useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { callGetAllUsers } from '@/_networks/api/user'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { callGetAllUsers } from '@/_networks/api/user';
+import { useRouter } from 'next/navigation';
 
-import { UserRole, Gender } from '@/_types'
+import { UserRole, Gender } from '@/_types';
+import { LoadingSpinner } from '@/_components/common/LoadingSpinner';
 
 type UserListFilter = {
-  gender?: Gender | null
-  role?: UserRole | null
-}
+  gender?: Gender | null;
+  role?: UserRole | null;
+};
 
 type UserListProps = {
-  onTotalCountChange: (count: number) => void
-  searchKeyword?: string | null
-  filter: UserListFilter
-}
+  onTotalCountChange: (count: number) => void;
+  searchKeyword?: string | null;
+  filter: UserListFilter;
+};
 
 export const UserList = (props: UserListProps) => {
-  const { onTotalCountChange, searchKeyword, filter } = props
-  const { gender, role } = filter
-  const [currentPage, setCurrentPage] = useState(0)
-  const router = useRouter()
+  const { onTotalCountChange, searchKeyword, filter } = props;
+  const { gender, role } = filter;
+  const [currentPage, setCurrentPage] = useState(0);
+  const router = useRouter();
   const { data, isLoading, isError } = useQuery({
     queryKey: ['users', currentPage, searchKeyword, gender, role],
     queryFn: () =>
@@ -34,18 +35,15 @@ export const UserList = (props: UserListProps) => {
         roles: role,
         gender: gender,
       }),
-  })
+  });
 
   useEffect(() => {
     if (data) {
-      onTotalCountChange(data?.totalCount ?? 0)
+      onTotalCountChange(data?.totalCount ?? 0);
     }
-  }, [data, onTotalCountChange])
+  }, [data, onTotalCountChange]);
 
-  if (isLoading) return <div>로딩 중...</div>
-  if (isError) return <div>데이터를 불러오는 중 오류 발생</div>
-
-  const totalPages = (data?.totalPageCount ?? 1) - 1 // 전체 페이지 수
+  const totalPages = (data?.totalPageCount ?? 1) - 1; // 전체 페이지 수
 
   return (
     <div className="flex flex-col justify-center item-centers p-4">
@@ -79,6 +77,8 @@ export const UserList = (props: UserListProps) => {
           ))}
         </tbody>
       </table>
+      {isLoading && <LoadingSpinner />}
+      {isError && <div>데이터를 불러오는 중 오류 발생</div>}
       <div className="flex justify-center mt-4 w-full">
         <Pagination
           totalPages={totalPages}
@@ -87,5 +87,5 @@ export const UserList = (props: UserListProps) => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
